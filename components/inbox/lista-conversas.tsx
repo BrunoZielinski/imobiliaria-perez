@@ -44,6 +44,8 @@ export const ListaConversas = ({ selecionada, aoSelecionar, filtro, aoFiltrar }:
       return !termo || contato?.nome.toLocaleLowerCase("pt-BR").includes(termo);
     })
     .sort((a, b) => {
+      if (a.id === selecionada && b.id !== selecionada) return -1;
+      if (b.id === selecionada && a.id !== selecionada) return 1;
       if (a.naoLidas !== b.naoLidas) return b.naoLidas - a.naoLidas;
       if (a.status === "fila" && b.status !== "fila") return -1;
       if (b.status === "fila" && a.status !== "fila") return 1;
