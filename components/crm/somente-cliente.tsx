@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { Spinner } from "@/components/ui/spinner";
+
+const observarMontagem = () => () => undefined;
 
 const Carregando = () => (
   <div className="flex h-full items-center justify-center">
@@ -16,9 +18,7 @@ export const SomenteCliente = ({
   children: React.ReactNode;
   fallback?: React.ReactNode;
 }) => {
-  const [montado, setMontado] = useState(false);
-
-  useEffect(() => setMontado(true), []);
+  const montado = useSyncExternalStore(observarMontagem, () => true, () => false);
 
   return <>{montado ? children : fallback}</>;
 };
