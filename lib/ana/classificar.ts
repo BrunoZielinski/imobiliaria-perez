@@ -21,7 +21,8 @@ const PALAVRAS: Record<Departamento, string[]> = {
   administrativo: [
     "boleto", "segunda via", "2a via", "pagamento", "pagar", "repasse", "contrato",
     "rescisao", "rescisão", "vistoria", "iptu", "condominio", "condomínio", "reparo",
-    "manutencao", "manutenção", "reajuste", "multa",
+    "manutencao", "manutenção", "reajuste", "multa", "financeiro", "vencimento",
+    "venceu", "atraso", "atrasado",
   ],
   recepcao: [
     "falar com", "recepcao", "recepção", "telefone", "endereco", "endereço",

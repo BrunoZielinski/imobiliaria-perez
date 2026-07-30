@@ -42,6 +42,14 @@ describe("classificar por texto livre", () => {
     expect(classificar("quando vai ser a vistoria do imóvel").departamento).toBe("administrativo");
   });
 
+  it("encaminha aluguel vencido para o financeiro, não para o comercial", () => {
+    const r = classificar(
+      "Meu aluguel venceu e preciso falar com o financeiro sobre o atraso",
+    );
+    expect(r.departamento).toBe("administrativo");
+    expect(r.confianca).toBeGreaterThan(0);
+  });
+
   it("preserva o texto original como contexto", () => {
     const texto = "quero comprar um apartamento na Gleba Palhano";
     expect(classificar(texto).contexto).toBe(texto);

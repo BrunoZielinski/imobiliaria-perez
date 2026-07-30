@@ -4,27 +4,11 @@ import type { Departamento } from "@/lib/tipos";
 import { DEPARTAMENTOS } from "@/lib/tipos";
 import { proximaAbertura } from "@/lib/expediente/expediente";
 
-export const SAUDACAO_ANA = `Eu sou a 🙋🏻‍♀️ *Ana*, assistente virtual da Imobiliária Perez.
+export const SAUDACAO_ANA = `Olá! Eu sou a Ana, assistente virtual da Imobiliária Perez.
 
-Por favor, encaminhar suas mensagens por texto.
+Conte em uma frase como podemos ajudar. Vou entender sua solicitação e encaminhar para a pessoa certa.`;
 
-Já estou lhe encaminhando para um de nossos atendentes.
-
-Para agilizar seu atendimento por favor, digite sua dúvida.
-
-Seja bem vindo a Imobiliária Perez.
-
-Para iniciar seu atendimento me informe sobre qual assunto deseja falar com a gente hoje?
-
-🔹 1 - Comercial
-🔹 2 - Administrativo
-🔹 3 - Recepção e Assuntos Gerais`;
-
-export const MENU_INVALIDO = `Não consegui identificar o assunto. Pode escolher uma das opções?
-
-🔹 1 - Comercial
-🔹 2 - Administrativo
-🔹 3 - Recepção e Assuntos Gerais`;
+export const MENU_INVALIDO = `Só para confirmar: sua solicitação é sobre comprar ou alugar, financeiro e boletos, manutenção e vistoria, ou outro assunto?`;
 
 export const mensagemEncaminhando = (departamento: Departamento) =>
   `Perfeito! Estou lhe encaminhando para o setor *${DEPARTAMENTOS[departamento]}*. Um momento, por favor.`;
