@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { Search, SlidersHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCrm } from "@/lib/store/crm-store";
 import { conversasVisiveis } from "@/lib/data";
@@ -9,6 +11,8 @@ import { BadgeCanal } from "@/components/crm/badge-canal";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { DEPARTAMENTOS } from "@/lib/tipos";
 import type { Departamento, StatusConversa } from "@/lib/tipos";
 
@@ -27,19 +31,54 @@ const ROTULO_STATUS: Record<StatusConversa, string> = {
 };
 
 export const ListaConversas = ({ selecionada, aoSelecionar, filtro, aoFiltrar }: Props) => {
+  const [busca, setBusca] = useState("");
   const dados = useCrm((s) => s.dados);
   const papel = useCrm((s) => s.papel);
   const usuarioId = useCrm((s) => s.usuarioId);
 
   const visiveis = conversasVisiveis(dados, papel, usuarioId)
     .filter((conversa) => filtro === "todos" || conversa.departamento === filtro)
-    .sort((a, b) => b.criadaEm.localeCompare(a.criadaEm));
+    .filter((conversa) => {
+      const contato = dados.contatos.find((c) => c.id === conversa.contatoId);
+      const termo = busca.trim().toLocaleLowerCase("pt-BR");
+      return !termo || contato?.nome.toLocaleLowerCase("pt-BR").includes(termo);
+    })
+    .sort((a, b) => {
+      if (a.naoLidas !== b.naoLidas) return b.naoLidas - a.naoLidas;
+      if (a.status === "fila" && b.status !== "fila") return -1;
+      if (b.status === "fila" && a.status !== "fila") return 1;
+      return b.criadaEm.localeCompare(a.criadaEm);
+    });
+
+  const aguardando = conversasVisiveis(dados, papel, usuarioId).filter(
+    (conversa) => conversa.status === "fila" || conversa.status === "ana",
+  ).length;
 
   return (
-    <div className="flex h-full w-80 shrink-0 flex-col border-r">
-      <div className="border-b p-2">
+    <div className="flex h-full w-[22rem] shrink-0 flex-col border-r max-xl:w-72">
+      <div className="space-y-4 border-b px-4 py-4">
+        <div className="flex items-start justify-between">
+          <div>
+            <h1 className="text-lg font-bold tracking-tight">Conversas</h1>
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              {aguardando} aguardando direcionamento
+            </p>
+          </div>
+          <Button variant="outline" size="icon-sm" aria-label="Filtros">
+            <SlidersHorizontal className="size-3.5" />
+          </Button>
+        </div>
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            value={busca}
+            onChange={(evento) => setBusca(evento.target.value)}
+            placeholder="Buscar cliente"
+            className="h-9 bg-muted/45 pl-9 text-xs"
+          />
+        </div>
         <Tabs value={filtro} onValueChange={(v) => aoFiltrar(v as Departamento | "todos")}>
-          <TabsList className="w-full">
+          <TabsList className="h-8 w-full bg-muted/70">
             <TabsTrigger value="todos" className="text-xs">
               Todos
             </TabsTrigger>
@@ -56,41 +95,62 @@ export const ListaConversas = ({ selecionada, aoSelecionar, filtro, aoFiltrar }:
         </Tabs>
       </div>
       <ScrollArea className="min-h-0 flex-1">
+        <div className="px-4 pb-1 pt-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+          Prioridade de atendimento
+        </div>
         {visiveis.map((conversa) => {
           const contato = dados.contatos.find((c) => c.id === conversa.contatoId);
           const ultima = dados.mensagens.filter((m) => m.conversaId === conversa.id).at(-1);
+          const iniciais = contato?.nome
+            .split(" ")
+            .slice(0, 2)
+            .map((nome) => nome[0])
+            .join("");
           return (
             <button
               key={conversa.id}
               onClick={() => aoSelecionar(conversa.id)}
               className={cn(
-                "flex w-full flex-col gap-1 border-b px-3 py-2.5 text-left transition-colors hover:bg-muted/60",
-                selecionada === conversa.id && "bg-muted"
+                "relative flex w-full gap-3 border-b px-4 py-3.5 text-left transition-colors hover:bg-muted/50",
+                selecionada === conversa.id && "bg-primary/[0.045]",
+                selecionada === conversa.id &&
+                  "after:absolute after:inset-y-3 after:left-0 after:w-0.5 after:rounded-full after:bg-primary",
               )}
             >
-              <div className="flex items-center justify-between gap-2">
-                <span className="truncate text-sm font-medium">{contato?.nome}</span>
-                {conversa.naoLidas > 0 && (
-                  <span className="flex size-4 shrink-0 items-center justify-center rounded-full bg-primary text-[10px] font-semibold text-primary-foreground">
-                    {conversa.naoLidas}
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[11px] font-bold text-primary">
+                {iniciais}
+              </span>
+              <span className="min-w-0 flex-1 space-y-1.5">
+                <span className="flex items-center justify-between gap-2">
+                  <span className="truncate text-sm font-semibold">{contato?.nome}</span>
+                  <span className="shrink-0 text-[10px] text-muted-foreground">
+                    {formatDistanceToNow(new Date(conversa.criadaEm), {
+                      locale: ptBR,
+                      addSuffix: true,
+                    })}
                   </span>
-                )}
-              </div>
-              <p className="truncate text-xs text-muted-foreground">{ultima?.texto}</p>
-              <div className="flex items-center gap-1.5">
-                <BadgeCanal canal={conversa.canal} />
-                <Badge variant="outline" className="text-[10px]">
-                  {ROTULO_STATUS[conversa.status]}
-                </Badge>
-                <span className="ml-auto text-[10px] text-muted-foreground">
-                  {formatDistanceToNow(new Date(conversa.criadaEm), { locale: ptBR })}
                 </span>
-              </div>
-              {conversa.departamento && (
-                <span className="text-[10px] text-muted-foreground">
-                  {DEPARTAMENTOS[conversa.departamento]}
+                <span className="block truncate text-xs text-muted-foreground">{ultima?.texto}</span>
+                <span className="flex items-center gap-1.5">
+                  <BadgeCanal canal={conversa.canal} />
+                  <Badge
+                    variant={conversa.status === "fila" ? "default" : "outline"}
+                    className="h-5 text-[9px]"
+                  >
+                    {ROTULO_STATUS[conversa.status]}
+                  </Badge>
+                  {conversa.departamento && (
+                    <span className="truncate text-[9px] text-muted-foreground">
+                      {DEPARTAMENTOS[conversa.departamento]}
+                    </span>
+                  )}
+                  {conversa.naoLidas > 0 && (
+                    <span className="ml-auto flex size-4 shrink-0 items-center justify-center rounded-full bg-primary text-[9px] font-bold text-primary-foreground">
+                      {conversa.naoLidas}
+                    </span>
+                  )}
                 </span>
-              )}
+              </span>
             </button>
           );
         })}

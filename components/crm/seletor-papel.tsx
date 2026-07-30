@@ -32,7 +32,7 @@ export const SeletorPapel = () => {
         value={usuarioId}
         onValueChange={(valor) => definirUsuario(valor as string)}
       >
-        <SelectTrigger className="w-52" size="sm">
+        <SelectTrigger className="w-44 bg-background" size="sm">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
@@ -44,7 +44,7 @@ export const SeletorPapel = () => {
         </SelectContent>
       </Select>
       <Select items={ROTULOS} value={papel} onValueChange={(v) => definirPapel(v as Papel)}>
-        <SelectTrigger className="w-40" size="sm">
+        <SelectTrigger className="w-36 bg-background" size="sm">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>

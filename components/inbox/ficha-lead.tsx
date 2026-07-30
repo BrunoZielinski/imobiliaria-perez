@@ -25,13 +25,13 @@ export const FichaLead = ({ conversaId }: { conversaId: string | null }) => {
   const imovel = dados.imoveis.find((i) => i.id === lead?.imovelId);
   const responsavel = dados.atendentes.find((a) => a.id === conversa?.atendenteId);
 
-  if (!conversa) return <aside className="w-72 shrink-0 border-l" />;
+  if (!conversa) return null;
 
   const pipeline = lead ? buscarPipeline(lead.pipeline) : null;
   const posicao = posicaoNaFila(dados, conversa.id);
 
   return (
-    <aside className="flex w-72 shrink-0 flex-col gap-4 overflow-y-auto border-l p-4">
+    <div className="flex flex-col gap-5 overflow-y-auto px-5 pb-6">
       <div>
         <p className="text-xs font-medium text-muted-foreground">Departamento</p>
         <p className="text-sm">
@@ -108,6 +108,6 @@ export const FichaLead = ({ conversaId }: { conversaId: string | null }) => {
           </div>
         </>
       )}
-    </aside>
+    </div>
   );
 };

@@ -3,13 +3,12 @@
 import { useEffect, useState } from "react";
 import { ListaConversas } from "@/components/inbox/lista-conversas";
 import { Thread } from "@/components/inbox/thread";
-import { FichaLead } from "@/components/inbox/ficha-lead";
 import { useCrm } from "@/lib/store/crm-store";
 import { conversasVisiveis, marcarComoLida } from "@/lib/data";
 import type { Departamento } from "@/lib/tipos";
 
 const InboxPage = () => {
-  const [selecionada, setSelecionada] = useState<string | null>("cv-1");
+  const [selecionada, setSelecionada] = useState<string | null>("cv-4");
   const [filtro, setFiltro] = useState<Departamento | "todos">("todos");
 
   const dados = useCrm((s) => s.dados);
@@ -18,25 +17,21 @@ const InboxPage = () => {
 
   const visiveis = conversasVisiveis(dados, papel, usuarioId);
   const aindaVisivel = visiveis.some((conversa) => conversa.id === selecionada);
+  const conversaAtiva = aindaVisivel ? selecionada : (visiveis[0]?.id ?? null);
 
   useEffect(() => {
-    if (!aindaVisivel) setSelecionada(visiveis[0]?.id ?? null);
-  }, [aindaVisivel, visiveis]);
-
-  useEffect(() => {
-    if (selecionada) marcarComoLida(selecionada);
-  }, [selecionada]);
+    if (conversaAtiva) marcarComoLida(conversaAtiva);
+  }, [conversaAtiva]);
 
   return (
-    <div className="flex h-full">
+    <div className="flex h-full overflow-hidden rounded-2xl border bg-background shadow-sm">
       <ListaConversas
         selecionada={selecionada}
         aoSelecionar={setSelecionada}
         filtro={filtro}
         aoFiltrar={setFiltro}
       />
-      <Thread conversaId={aindaVisivel ? selecionada : null} />
-      <FichaLead conversaId={aindaVisivel ? selecionada : null} />
+      <Thread conversaId={conversaAtiva} />
     </div>
   );
 };
