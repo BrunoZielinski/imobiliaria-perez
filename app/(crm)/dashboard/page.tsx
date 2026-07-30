@@ -40,8 +40,19 @@ const DashboardPage = () => {
     .reduce((soma, lead) => soma + lead.valor, 0);
 
   return (
-    <div className="flex h-full flex-col gap-4 overflow-y-auto p-4">
-      <div className="grid grid-cols-4 gap-3">
+    <div className="h-full overflow-y-auto">
+      <div className="mx-auto flex max-w-7xl flex-col gap-5 p-5">
+      <div>
+        <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-primary">
+          Visão da operação
+        </p>
+        <h1 className="mt-1 text-2xl font-bold tracking-tight">Indicadores</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Atendimento, distribuição e oportunidades em uma única leitura.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-4 gap-3 max-xl:grid-cols-2">
         <CartaoMetrica rotulo="Conversas" valor={String(totalConversas)} apoio="no período" />
         <CartaoMetrica rotulo="Aguardando na fila" valor={String(emFila)} />
         <CartaoMetrica
@@ -53,8 +64,8 @@ const DashboardPage = () => {
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <div className="rounded-lg border p-4">
-          <p className="mb-3 text-sm font-medium">Conversas por canal</p>
+        <div className="rounded-2xl border bg-background p-5 shadow-xs">
+          <p className="mb-4 text-sm font-bold">Conversas por canal</p>
           <div className="flex flex-col gap-3">
             {porCanal.map(({ canal, total }) => (
               <div key={canal} className="flex flex-col gap-1">
@@ -68,8 +79,8 @@ const DashboardPage = () => {
           </div>
         </div>
 
-        <div className="rounded-lg border p-4">
-          <p className="mb-3 text-sm font-medium">Conversas por departamento</p>
+        <div className="rounded-2xl border bg-background p-5 shadow-xs">
+          <p className="mb-4 text-sm font-bold">Conversas por departamento</p>
           <div className="flex flex-col gap-3">
             {porDepartamento.map(({ departamento, total }) => (
               <div key={departamento} className="flex flex-col gap-1">
@@ -84,18 +95,19 @@ const DashboardPage = () => {
         </div>
       </div>
 
-      <div className="rounded-lg border p-4">
-        <p className="mb-3 text-sm font-medium">Leads por pipeline</p>
+      <div className="rounded-2xl border bg-background p-5 shadow-xs">
+        <p className="mb-4 text-sm font-bold">Leads por pipeline</p>
         <div className="grid grid-cols-4 gap-3">
           {PIPELINES.map((pipeline) => (
-            <div key={pipeline.id}>
+            <div key={pipeline.id} className="rounded-xl bg-muted/45 px-4 py-3">
               <p className="text-xs text-muted-foreground">{pipeline.nome}</p>
-              <p className="text-2xl font-semibold">
+              <p className="mt-1 text-2xl font-bold">
                 {dados.leads.filter((lead) => lead.pipeline === pipeline.id).length}
               </p>
             </div>
           ))}
         </div>
+      </div>
       </div>
     </div>
   );

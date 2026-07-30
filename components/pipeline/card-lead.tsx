@@ -21,7 +21,7 @@ export const CardLead = ({ lead }: { lead: Lead }) => {
     <Card
       draggable
       onDragStart={(e) => e.dataTransfer.setData("text/plain", lead.id)}
-      className="cursor-grab gap-2 p-3 active:cursor-grabbing"
+      className="cursor-grab gap-2 rounded-xl border-0 p-3 shadow-sm ring-1 ring-foreground/8 transition-shadow hover:shadow-md active:cursor-grabbing"
     >
       <div className="flex items-start justify-between gap-2">
         <p className="text-sm font-medium">{contato?.nome}</p>

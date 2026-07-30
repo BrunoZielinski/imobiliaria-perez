@@ -1,93 +1,51 @@
 "use client";
 
-import { useState } from "react";
-import { Zap } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Play, RotateCcw, Sparkles } from "lucide-react";
 import { useCrm } from "@/lib/store/crm-store";
-import { receberMensagem, drenarFila } from "@/lib/data";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import type { Canal } from "@/lib/tipos";
-import { CANAIS } from "@/lib/tipos";
 
 export const Simulador = () => {
-  const contatos = useCrm((s) => s.dados.contatos);
+  const router = useRouter();
   const reiniciar = useCrm((s) => s.reiniciar);
-  const [contatoId, setContatoId] = useState("ct-6");
-  const [canal, setCanal] = useState<Canal>("whatsapp");
-  const [texto, setTexto] = useState("quero comprar um apartamento na Gleba Palhano");
 
-  const disparar = async () => {
-    const agora = new Date();
-    await receberMensagem({
-      contatoId,
-      canal,
-      texto,
-      agora,
-      departamentoDireto: canal === "whatsapp" ? undefined : "comercial",
-    });
-    await drenarFila(agora);
+  const apresentar = () => {
+    reiniciar();
+    router.push("/inbox");
   };
 
   return (
     <Popover>
       <PopoverTrigger render={<Button variant="outline" size="sm" />}>
-        <Zap className="size-4" />
-        Simular lead
+        <Play className="size-3.5 fill-current" />
+        Apresentar cenário
       </PopoverTrigger>
-      <PopoverContent className="flex w-80 flex-col gap-3" align="end">
-        <div className="flex flex-col gap-1.5">
-          <Label className="text-xs">Contato</Label>
-          <Select
-            items={Object.fromEntries(contatos.map((c) => [c.id, c.nome]))}
-            value={contatoId}
-            onValueChange={(valor) => setContatoId(valor as string)}
-          >
-            <SelectTrigger size="sm">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {contatos.map((contato) => (
-                <SelectItem key={contato.id} value={contato.id}>
-                  {contato.nome}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+      <PopoverContent className="w-80 p-0" align="end">
+        <div className="border-b bg-primary/[0.035] p-4">
+          <div className="flex items-center gap-2 text-sm font-bold">
+            <span className="flex size-7 items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <Sparkles className="size-3.5" />
+            </span>
+            Atendimento inteligente
+          </div>
+          <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+            Marcos explica um atraso no aluguel por motivo de saúde. A Ana entende a situação,
+            encaminha ao Financeiro e entrega o contexto completo para a Zilda.
+          </p>
         </div>
-        <div className="flex flex-col gap-1.5">
-          <Label className="text-xs">Canal</Label>
-          <Select items={CANAIS} value={canal} onValueChange={(v) => setCanal(v as Canal)}>
-            <SelectTrigger size="sm">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {(Object.keys(CANAIS) as Canal[]).map((valor) => (
-                <SelectItem key={valor} value={valor}>
-                  {CANAIS[valor]}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        <div className="space-y-3 p-4">
+          <div className="rounded-xl border bg-muted/35 p-3 text-xs">
+            <p className="font-semibold">O que destacar</p>
+            <p className="mt-1 leading-relaxed text-muted-foreground">
+              Sem menus numéricos, sem repetição e sem o cliente precisar contar tudo novamente.
+            </p>
+          </div>
+          <Button className="w-full" size="sm" onClick={apresentar}>
+            <RotateCcw className="size-3.5" />
+            Abrir cenário completo
+          </Button>
         </div>
-        <div className="flex flex-col gap-1.5">
-          <Label className="text-xs">Mensagem</Label>
-          <Input value={texto} onChange={(e) => setTexto(e.target.value)} />
-        </div>
-        <Button size="sm" onClick={disparar}>
-          Enviar mensagem
-        </Button>
-        <Button size="sm" variant="ghost" onClick={reiniciar}>
-          Reiniciar dados
-        </Button>
       </PopoverContent>
     </Popover>
   );

@@ -21,7 +21,9 @@ const moeda = (valor: number) =>
 export const FichaLead = ({ conversaId }: { conversaId: string | null }) => {
   const dados = useCrm((s) => s.dados);
   const conversa = dados.conversas.find((c) => c.id === conversaId);
-  const lead = dados.leads.find((l) => l.conversaId === conversaId);
+  const lead =
+    dados.leads.find((l) => l.conversaId === conversaId) ??
+    dados.leads.find((l) => l.contatoId === conversa?.contatoId);
   const imovel = dados.imoveis.find((i) => i.id === lead?.imovelId);
   const responsavel = dados.atendentes.find((a) => a.id === conversa?.atendenteId);
 

@@ -29,18 +29,36 @@ const AtendentesPage = () => {
     dados.conversas.filter((c) => c.status === "fila" && c.departamento === departamento).length;
 
   return (
-    <div className="flex h-full flex-col gap-4 overflow-y-auto p-4">
+    <div className="h-full overflow-y-auto">
+      <div className="mx-auto flex max-w-7xl flex-col gap-5 p-5">
+      <div>
+        <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-primary">
+          Distribuição inteligente
+        </p>
+        <h1 className="mt-1 text-2xl font-bold tracking-tight">Equipe</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Disponibilidade, capacidade e filas por departamento em tempo real.
+        </p>
+      </div>
+
       <div className="grid grid-cols-3 gap-3">
         {(Object.keys(DEPARTAMENTOS) as Departamento[]).map((departamento) => (
-          <div key={departamento} className="rounded-lg border p-3">
-            <p className="text-xs text-muted-foreground">{DEPARTAMENTOS[departamento]}</p>
-            <p className="text-2xl font-semibold">{filaPorDepartamento(departamento)}</p>
+          <div key={departamento} className="rounded-2xl border bg-background p-4 shadow-xs">
+            <p className="text-xs font-medium text-muted-foreground">{DEPARTAMENTOS[departamento]}</p>
+            <p className="mt-2 text-2xl font-bold">{filaPorDepartamento(departamento)}</p>
             <p className="text-xs text-muted-foreground">aguardando na fila</p>
           </div>
         ))}
       </div>
 
-      <Table>
+      <div className="overflow-hidden rounded-2xl border bg-background shadow-xs">
+        <div className="border-b px-5 py-4">
+          <p className="text-sm font-bold">Operação da equipe</p>
+          <p className="text-[11px] text-muted-foreground">
+            O rodízio respeita disponibilidade, departamento e limite de atendimentos.
+          </p>
+        </div>
+        <Table>
         <TableHeader>
           <TableRow>
             <TableHead>Atendente</TableHead>
@@ -54,7 +72,18 @@ const AtendentesPage = () => {
         <TableBody>
           {dados.atendentes.map((atendente) => (
             <TableRow key={atendente.id}>
-              <TableCell className="font-medium">{atendente.nome}</TableCell>
+              <TableCell>
+                <div className="flex items-center gap-3">
+                  <span className="flex size-8 items-center justify-center rounded-full bg-primary/10 text-[10px] font-bold text-primary">
+                    {atendente.nome
+                      .split(" ")
+                      .slice(0, 2)
+                      .map((nome) => nome[0])
+                      .join("")}
+                  </span>
+                  <span className="font-semibold">{atendente.nome}</span>
+                </div>
+              </TableCell>
               <TableCell>
                 <div className="flex flex-wrap gap-1">
                   {atendente.departamentos.map((departamento) => (
@@ -79,6 +108,8 @@ const AtendentesPage = () => {
           ))}
         </TableBody>
       </Table>
+      </div>
+      </div>
     </div>
   );
 };

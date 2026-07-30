@@ -27,14 +27,14 @@ export const Coluna = ({ etapa, leads }: { etapa: Etapa; leads: Lead[] }) => {
         if (leadId) moverLead(leadId, etapa.id, new Date());
       }}
       className={cn(
-        "flex w-64 shrink-0 flex-col rounded-lg border bg-muted/30 transition-colors",
+        "flex w-72 shrink-0 flex-col rounded-xl border bg-background shadow-xs transition-colors",
         sobre && "border-primary bg-primary/5"
       )}
     >
-      <div className="border-b px-3 py-2">
+      <div className="border-b px-3.5 py-3">
         <div className="flex items-center justify-between">
           <p className="text-sm font-medium">{etapa.nome}</p>
-          <span className="rounded bg-muted px-1.5 text-xs text-muted-foreground">
+          <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
             {leads.length}
           </span>
         </div>
