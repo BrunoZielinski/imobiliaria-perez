@@ -12,7 +12,7 @@ import {
   mensagemPosicaoNaFila,
 } from "@/lib/ana/script";
 import { dentroDoExpediente } from "@/lib/expediente/expediente";
-import type { Canal, Departamento, Mensagem, Papel, PipelineId } from "@/lib/tipos";
+import type { Canal, Departamento, Mensagem, ModoTriagem, Papel, PipelineId } from "@/lib/tipos";
 
 let sequencia = 0;
 const novoId = (prefixo: string) => `${prefixo}-${Date.now().toString(36)}-${sequencia++}`;
@@ -118,8 +118,9 @@ export const receberMensagem = async (params: {
   texto: string;
   agora: Date;
   departamentoDireto?: Departamento;
+  modoTriagem?: ModoTriagem;
 }) => {
-  const { contatoId, canal, texto, agora, departamentoDireto } = params;
+  const { contatoId, canal, texto, agora, departamentoDireto, modoTriagem } = params;
   aplicar((estado) => {
     const existente = estado.conversas.find(
       (c) => c.contatoId === contatoId && c.canal === canal && c.status !== "encerrada"
@@ -166,7 +167,8 @@ export const receberMensagem = async (params: {
     }
 
     const conversaId = novoId("cv");
-    const viaAna = canal === "whatsapp" && !departamentoDireto;
+    const viaAna = canal === "whatsapp" && !departamentoDireto && modoTriagem !== "manual";
+    const modoDaConversa: ModoTriagem = viaAna ? "ana" : modoTriagem ?? "direto";
 
     const base: EstadoCrm = {
       ...estado,
@@ -176,6 +178,7 @@ export const receberMensagem = async (params: {
           id: conversaId,
           contatoId,
           canal,
+          modoTriagem: modoDaConversa,
           departamento: departamentoDireto ?? null,
           status: viaAna ? ("ana" as const) : ("fila" as const),
           atendenteId: null,

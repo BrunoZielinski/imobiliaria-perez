@@ -2,9 +2,16 @@ export type Canal = "whatsapp" | "site" | "portal";
 export type Departamento = "comercial" | "administrativo" | "recepcao";
 export type Papel = "atendente" | "supervisor" | "administrador";
 export type StatusConversa = "ana" | "fila" | "atendimento" | "encerrada";
-export type Autor = "contato" | "ana" | "atendente";
+export type ModoTriagem = "ana" | "manual" | "direto";
+export type Autor = "contato" | "ana" | "sistema" | "atendente";
 export type PipelineId = "venda" | "locacao" | "lancamentos" | "captacao";
 export type MotivoAtribuicao = "roleta" | "manual" | "sla";
+
+export type ApresentacaoMensagem =
+  | { tipo: "botoes"; opcoes: string[] }
+  | { tipo: "lista"; rotulo: string; opcoes: string[] }
+  | { tipo: "button_reply" }
+  | { tipo: "list_reply" };
 
 export type Contato = {
   id: string;
@@ -20,12 +27,14 @@ export type Mensagem = {
   autor: Autor;
   texto: string;
   em: string;
+  apresentacao?: ApresentacaoMensagem;
 };
 
 export type Conversa = {
   id: string;
   contatoId: string;
   canal: Canal;
+  modoTriagem: ModoTriagem;
   departamento: Departamento | null;
   status: StatusConversa;
   atendenteId: string | null;

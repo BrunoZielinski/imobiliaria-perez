@@ -6,6 +6,7 @@ const CONVERSA_PERSISTIDA: Conversa = {
   id: "cv-demo",
   contatoId: "ct-9",
   canal: "whatsapp",
+  modoTriagem: "manual",
   departamento: "administrativo",
   status: "atendimento",
   atendenteId: "at-5",

@@ -50,6 +50,7 @@ const CONTATOS = [
   { nome: "Sérgio Batista", telefone: "43 99311-6672", email: "sergio.b@email.com" },
   { nome: "Luciana Prado", telefone: "43 99845-2213", email: null },
   { nome: "Cliente da apresentação", telefone: "43 99999-0000", email: null },
+  { nome: "Renata Almeida", telefone: "43 99241-9088", email: "renata.almeida@email.com" },
 ];
 
 const minutosAtras = (base: Date, minutos: number) =>
@@ -65,14 +66,15 @@ export const criarSeed = (base: Date): EstadoCrm => {
   }));
 
   const conversas: Conversa[] = [
-    { id: "cv-1", contatoId: "ct-1", canal: "whatsapp", departamento: "comercial", status: "atendimento", atendenteId: "at-1", criadaEm: minutosAtras(base, 95), entrouNaFilaEm: minutosAtras(base, 93), primeiraRespostaEm: minutosAtras(base, 88), contextoAna: "quero comprar um apartamento na Gleba Palhano", naoLidas: 2 },
-    { id: "cv-2", contatoId: "ct-2", canal: "whatsapp", departamento: "comercial", status: "fila", atendenteId: null, criadaEm: minutosAtras(base, 22), entrouNaFilaEm: minutosAtras(base, 20), primeiraRespostaEm: null, contextoAna: "tem casa pra alugar no centro?", naoLidas: 1 },
-    { id: "cv-3", contatoId: "ct-3", canal: "site", departamento: "comercial", status: "atendimento", atendenteId: "at-2", criadaEm: minutosAtras(base, 240), entrouNaFilaEm: minutosAtras(base, 240), primeiraRespostaEm: minutosAtras(base, 231), contextoAna: null, naoLidas: 0 },
-    { id: "cv-4", contatoId: "ct-4", canal: "whatsapp", departamento: "administrativo", status: "atendimento", atendenteId: "at-5", criadaEm: minutosAtras(base, 180), entrouNaFilaEm: minutosAtras(base, 178), primeiraRespostaEm: minutosAtras(base, 170), contextoAna: "Tivemos um imprevisto de saúde na família e não conseguimos pagar o aluguel no vencimento. Gostaria de solicitar a revisão da multa, se possível.", naoLidas: 1 },
-    { id: "cv-5", contatoId: "ct-5", canal: "portal", departamento: "comercial", status: "fila", atendenteId: null, criadaEm: minutosAtras(base, 8), entrouNaFilaEm: minutosAtras(base, 8), primeiraRespostaEm: null, contextoAna: null, naoLidas: 1 },
-    { id: "cv-6", contatoId: "ct-6", canal: "whatsapp", departamento: null, status: "ana", atendenteId: null, criadaEm: minutosAtras(base, 3), entrouNaFilaEm: null, primeiraRespostaEm: null, contextoAna: null, naoLidas: 1 },
-    { id: "cv-7", contatoId: "ct-7", canal: "whatsapp", departamento: "recepcao", status: "encerrada", atendenteId: "at-7", criadaEm: minutosAtras(base, 1400), entrouNaFilaEm: minutosAtras(base, 1398), primeiraRespostaEm: minutosAtras(base, 1392), contextoAna: null, naoLidas: 0 },
-    { id: "cv-8", contatoId: "ct-8", canal: "site", departamento: "comercial", status: "atendimento", atendenteId: "at-1", criadaEm: minutosAtras(base, 320), entrouNaFilaEm: minutosAtras(base, 320), primeiraRespostaEm: minutosAtras(base, 300), contextoAna: null, naoLidas: 0 },
+    { id: "cv-1", contatoId: "ct-1", canal: "whatsapp", modoTriagem: "ana", departamento: "comercial", status: "atendimento", atendenteId: "at-1", criadaEm: minutosAtras(base, 95), entrouNaFilaEm: minutosAtras(base, 93), primeiraRespostaEm: minutosAtras(base, 88), contextoAna: "quero comprar um apartamento na Gleba Palhano", naoLidas: 2 },
+    { id: "cv-2", contatoId: "ct-2", canal: "whatsapp", modoTriagem: "ana", departamento: "comercial", status: "fila", atendenteId: null, criadaEm: minutosAtras(base, 22), entrouNaFilaEm: minutosAtras(base, 20), primeiraRespostaEm: null, contextoAna: "tem casa pra alugar no centro?", naoLidas: 1 },
+    { id: "cv-3", contatoId: "ct-3", canal: "site", modoTriagem: "direto", departamento: "comercial", status: "atendimento", atendenteId: "at-2", criadaEm: minutosAtras(base, 240), entrouNaFilaEm: minutosAtras(base, 240), primeiraRespostaEm: minutosAtras(base, 231), contextoAna: null, naoLidas: 0 },
+    { id: "cv-4", contatoId: "ct-4", canal: "whatsapp", modoTriagem: "ana", departamento: "administrativo", status: "atendimento", atendenteId: "at-5", criadaEm: minutosAtras(base, 180), entrouNaFilaEm: minutosAtras(base, 178), primeiraRespostaEm: minutosAtras(base, 170), contextoAna: "Tivemos um imprevisto de saúde na família e não conseguimos pagar o aluguel no vencimento. Gostaria de solicitar a revisão da multa, se possível.", naoLidas: 1 },
+    { id: "cv-5", contatoId: "ct-5", canal: "portal", modoTriagem: "direto", departamento: "comercial", status: "fila", atendenteId: null, criadaEm: minutosAtras(base, 8), entrouNaFilaEm: minutosAtras(base, 8), primeiraRespostaEm: null, contextoAna: null, naoLidas: 1 },
+    { id: "cv-6", contatoId: "ct-6", canal: "whatsapp", modoTriagem: "ana", departamento: null, status: "ana", atendenteId: null, criadaEm: minutosAtras(base, 3), entrouNaFilaEm: null, primeiraRespostaEm: null, contextoAna: null, naoLidas: 1 },
+    { id: "cv-7", contatoId: "ct-7", canal: "whatsapp", modoTriagem: "direto", departamento: "recepcao", status: "encerrada", atendenteId: "at-7", criadaEm: minutosAtras(base, 1400), entrouNaFilaEm: minutosAtras(base, 1398), primeiraRespostaEm: minutosAtras(base, 1392), contextoAna: null, naoLidas: 0 },
+    { id: "cv-8", contatoId: "ct-8", canal: "site", modoTriagem: "direto", departamento: "comercial", status: "atendimento", atendenteId: "at-1", criadaEm: minutosAtras(base, 320), entrouNaFilaEm: minutosAtras(base, 320), primeiraRespostaEm: minutosAtras(base, 300), contextoAna: null, naoLidas: 0 },
+    { id: "cv-9", contatoId: "ct-10", canal: "whatsapp", modoTriagem: "manual", departamento: "administrativo", status: "atendimento", atendenteId: "at-5", criadaEm: minutosAtras(base, 70), entrouNaFilaEm: minutosAtras(base, 66), primeiraRespostaEm: minutosAtras(base, 59), contextoAna: "Financeiro e boletos: quero confirmar o vencimento deste mês.", naoLidas: 0 },
   ];
 
   const mensagens: Mensagem[] = [
@@ -110,6 +112,16 @@ export const criarSeed = (base: Date): EstadoCrm => {
 
     { id: "ms-26", conversaId: "cv-8", autor: "contato", texto: "Quero colocar meu apartamento para alugar com vocês.", em: minutosAtras(base, 320) },
     { id: "ms-27", conversaId: "cv-8", autor: "atendente", texto: "Que ótimo, Luciana! Podemos agendar uma avaliação do imóvel?", em: minutosAtras(base, 300) },
+
+    { id: "ms-28", conversaId: "cv-9", autor: "contato", texto: "Olá", em: minutosAtras(base, 70) },
+    { id: "ms-29", conversaId: "cv-9", autor: "sistema", texto: "Olá! Como podemos ajudar hoje?", em: minutosAtras(base, 69), apresentacao: { tipo: "botoes", opcoes: ["Comprar ou alugar", "Já sou cliente", "Outros assuntos"] } },
+    { id: "ms-30", conversaId: "cv-9", autor: "contato", texto: "Já sou cliente", em: minutosAtras(base, 68), apresentacao: { tipo: "button_reply" } },
+    { id: "ms-31", conversaId: "cv-9", autor: "sistema", texto: "Escolha o assunto do seu atendimento.", em: minutosAtras(base, 67), apresentacao: { tipo: "lista", rotulo: "Ver assuntos", opcoes: ["Manutenção", "Vistoria e desocupação", "Financeiro e boletos", "Aluguel em atraso", "Repasse ao proprietário"] } },
+    { id: "ms-32", conversaId: "cv-9", autor: "contato", texto: "Financeiro e boletos", em: minutosAtras(base, 66), apresentacao: { tipo: "list_reply" } },
+    { id: "ms-33", conversaId: "cv-9", autor: "sistema", texto: "Conte brevemente o que aconteceu para a equipe receber o contexto.", em: minutosAtras(base, 65) },
+    { id: "ms-34", conversaId: "cv-9", autor: "contato", texto: "Quero confirmar o vencimento do aluguel deste mês.", em: minutosAtras(base, 64) },
+    { id: "ms-35", conversaId: "cv-9", autor: "sistema", texto: "Recebemos sua solicitação e encaminhamos para o setor Administrativo.", em: minutosAtras(base, 63) },
+    { id: "ms-36", conversaId: "cv-9", autor: "atendente", texto: "Olá, Renata! Aqui é a Zilda, do Financeiro da Perez. O vencimento deste mês está previsto para o dia 10. Posso ajudar com mais alguma informação?", em: minutosAtras(base, 59) },
   ];
 
   const leads: Lead[] = [

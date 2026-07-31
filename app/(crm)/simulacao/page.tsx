@@ -200,6 +200,7 @@ const SimulacaoPage = () => {
       texto: resultado.contexto,
       agora,
       departamentoDireto: resultado.departamento,
+      modoTriagem: "manual",
     });
 
     const confirmacao = resultado.sessao.registros.at(-1)?.texto ?? "";
