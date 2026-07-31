@@ -12,7 +12,7 @@ export const Simulador = () => {
 
   const apresentar = () => {
     reiniciar();
-    router.push("/inbox");
+    router.push("/simulacao");
   };
 
   return (
@@ -27,23 +27,24 @@ export const Simulador = () => {
             <span className="flex size-7 items-center justify-center rounded-lg bg-primary/10 text-primary">
               <Sparkles className="size-3.5" />
             </span>
-            Atendimento inteligente
+            Demonstração ao vivo
           </div>
           <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-            Marcos explica um atraso no aluguel por motivo de saúde. A Ana entende a situação,
-            encaminha ao Financeiro e entrega o contexto completo para a Zilda.
+            Digite como se fosse o cliente e acompanhe a mensagem chegando pela Cloud API,
+            passando pela Ana e sendo entregue ao atendente correto.
           </p>
         </div>
         <div className="space-y-3 p-4">
           <div className="rounded-xl border bg-muted/35 p-3 text-xs">
             <p className="font-semibold">O que destacar</p>
             <p className="mt-1 leading-relaxed text-muted-foreground">
-              Sem menus numéricos, sem repetição e sem o cliente precisar contar tudo novamente.
+              A visão do cliente, os eventos técnicos e a operação da Central Perez aparecem ao
+              mesmo tempo.
             </p>
           </div>
           <Button className="w-full" size="sm" onClick={apresentar}>
             <RotateCcw className="size-3.5" />
-            Abrir cenário completo
+            Abrir simulação ao vivo
           </Button>
         </div>
       </PopoverContent>

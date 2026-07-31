@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, Building2, KanbanSquare, MessageSquare, Users } from "lucide-react";
+import { BarChart3, Building2, KanbanSquare, MessageSquare, Radio, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const ITENS = [
+  { href: "/simulacao", rotulo: "Simulação ao vivo", icone: Radio },
   { href: "/inbox", rotulo: "Conversas", icone: MessageSquare },
   { href: "/pipelines", rotulo: "CRM", icone: KanbanSquare },
   { href: "/carteira", rotulo: "Carteira", icone: Building2 },
