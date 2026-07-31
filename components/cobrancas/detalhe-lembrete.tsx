@@ -45,28 +45,28 @@ export const DetalheLembrete = ({
 
   return (
     <aside className="flex min-h-0 flex-col rounded-2xl border bg-background shadow-xs">
-      <div className="border-b px-5 py-4">
+      <div className="border-b px-4 py-3">
         <Badge
           variant="outline"
           className="border-sky-200 bg-sky-50 text-sky-700"
         >
           Template Meta aprovado — demonstração
         </Badge>
-        <h2 className="mt-3 text-base font-bold">{lembrete.locatario}</h2>
+        <h2 className="mt-2 text-base font-bold">{lembrete.locatario}</h2>
         <p className="text-[11px] text-muted-foreground">
           {lembrete.contrato} · {lembrete.imovel}
         </p>
       </div>
 
-      <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-5">
+      <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-4">
         <div className="grid grid-cols-2 gap-3">
-          <div className="rounded-xl bg-muted/55 p-3">
+          <div className="rounded-xl bg-muted/55 p-2.5">
             <p className="text-[10px] text-muted-foreground">Vencimento</p>
             <p className="mt-1 text-xs font-bold">
               {dataCurta(lembrete.vencimento)}
             </p>
           </div>
-          <div className="rounded-xl bg-muted/55 p-3">
+          <div className="rounded-xl bg-muted/55 p-2.5">
             <p className="text-[10px] text-muted-foreground">Antecedência</p>
             <p className="mt-1 text-xs font-bold">
               {lembrete.antecedenciaDias} dias antes
@@ -75,13 +75,13 @@ export const DetalheLembrete = ({
         </div>
 
         <div>
-          <p className="mb-2 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground">
+          <p className="mb-1.5 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground">
             <MessageCircleMore className="size-3.5" />
             Prévia da mensagem
           </p>
-          <div className="rounded-2xl rounded-br-md bg-[#d9fdd3] p-3 text-xs leading-relaxed text-slate-800 shadow-xs">
+          <div className="rounded-2xl rounded-br-md bg-[#d9fdd3] p-2.5 text-xs leading-relaxed text-slate-800 shadow-xs">
             {mensagemDoLembrete(lembrete)}
-            <p className="mt-2 text-right text-[9px] text-slate-500">
+            <p className="mt-1.5 text-right text-[9px] text-slate-500">
               {lembrete.horario}
             </p>
           </div>
@@ -90,7 +90,7 @@ export const DetalheLembrete = ({
         <Separator />
 
         <div>
-          <p className="mb-3 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground">
+          <p className="mb-2 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground">
             <CalendarClock className="size-3.5" />
             Linha do tempo visual
           </p>
@@ -123,7 +123,7 @@ export const DetalheLembrete = ({
               </div>
             ))}
           </div>
-          <p className="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-[10px] leading-relaxed text-amber-800">
+          <p className="mt-2 rounded-lg bg-amber-50 px-3 py-1.5 text-[10px] leading-relaxed text-amber-800">
             Nenhuma mensagem real será enviada nesta demonstração.
           </p>
         </div>
