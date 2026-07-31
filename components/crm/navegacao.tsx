@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, Building2, KanbanSquare, MessageSquare, Radio, Users } from "lucide-react";
+import { BarChart3, Building2, CalendarClock, KanbanSquare, MessageSquare, Radio, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const ITENS = [
@@ -10,6 +10,7 @@ const ITENS = [
   { href: "/inbox", rotulo: "Conversas", icone: MessageSquare },
   { href: "/pipelines", rotulo: "CRM", icone: KanbanSquare },
   { href: "/carteira", rotulo: "Carteira", icone: Building2 },
+  { href: "/cobrancas", rotulo: "Cobranças", icone: CalendarClock, adicional: true },
   { href: "/atendentes", rotulo: "Equipe", icone: Users },
   { href: "/dashboard", rotulo: "Indicadores", icone: BarChart3 },
 ];
@@ -18,7 +19,7 @@ export const Navegacao = () => {
   const caminho = usePathname();
   return (
     <nav className="flex flex-col gap-1 px-3 py-5">
-      {ITENS.map(({ href, rotulo, icone: Icone }) => (
+      {ITENS.map(({ href, rotulo, icone: Icone, adicional }) => (
         <Link
           key={href}
           href={href}
@@ -31,6 +32,12 @@ export const Navegacao = () => {
         >
           <Icone className="size-[18px]" />
           {rotulo}
+          {adicional && (
+            <span
+              className="ml-auto size-1.5 rounded-full bg-amber-400 ring-2 ring-amber-400/15"
+              title="Módulo adicional"
+            />
+          )}
         </Link>
       ))}
     </nav>
