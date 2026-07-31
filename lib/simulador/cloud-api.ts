@@ -22,6 +22,20 @@ type SaidaCloud = {
   wamid: string;
 };
 
+type EntradaInterativaCloud = {
+  tipo: "button_reply" | "list_reply";
+  id: string;
+  titulo: string;
+  em: string;
+};
+
+type SaidaInterativaCloud = {
+  tipo: "button" | "list";
+  titulo: string;
+  em: string;
+  wamid: string;
+};
+
 const idEvento = (tipo: TipoEventoCloud, em: string, sufixo: string) =>
   `${tipo}-${em}-${sufixo}`.replaceAll(/[^a-zA-Z0-9.-]/g, "-");
 
@@ -62,6 +76,74 @@ export const eventosSaidaCloud = ({
       tipo: "message.accepted",
       rotulo: "Mensagem aceita",
       detalhe: `POST /messages · ${base} · “${texto}”`,
+      em,
+      simulado: true,
+    },
+    {
+      id: idEvento("message.sent", em, wamid),
+      tipo: "message.sent",
+      rotulo: "Enviada",
+      detalhe: `${base} · status sent`,
+      em: avancarSegundos(em, 1),
+      simulado: true,
+    },
+    {
+      id: idEvento("message.delivered", em, wamid),
+      tipo: "message.delivered",
+      rotulo: "Entregue",
+      detalhe: `${base} · status delivered`,
+      em: avancarSegundos(em, 2),
+      simulado: true,
+    },
+    {
+      id: idEvento("message.read", em, wamid),
+      tipo: "message.read",
+      rotulo: "Lida",
+      detalhe: `${base} · status read`,
+      em: avancarSegundos(em, 3),
+      simulado: true,
+    },
+  ];
+};
+
+export const eventosEntradaInterativaCloud = ({
+  tipo,
+  id,
+  titulo,
+  em,
+}: EntradaInterativaCloud): EventoCloud[] => [
+  {
+    id: idEvento("webhook.received", em, id),
+    tipo: "webhook.received",
+    rotulo: "Resposta interativa recebida",
+    detalhe: `POST /webhooks/whatsapp · interactive.${tipo} · id=${id} · “${titulo}”`,
+    em,
+    simulado: true,
+  },
+  {
+    id: idEvento("webhook.acknowledged", em, `${id}-ack`),
+    tipo: "webhook.acknowledged",
+    rotulo: "Evento confirmado",
+    detalhe: "200 OK · seleção processada pela Central Perez",
+    em: avancarSegundos(em, 1),
+    simulado: true,
+  },
+];
+
+export const eventosSaidaInterativaCloud = ({
+  tipo,
+  titulo,
+  em,
+  wamid,
+}: SaidaInterativaCloud): EventoCloud[] => {
+  const base = `${wamid} · Sistema · interactive.type=${tipo}`;
+
+  return [
+    {
+      id: idEvento("message.accepted", em, wamid),
+      tipo: "message.accepted",
+      rotulo: "Interação aceita",
+      detalhe: `POST /messages · ${base} · “${titulo}”`,
       em,
       simulado: true,
     },
