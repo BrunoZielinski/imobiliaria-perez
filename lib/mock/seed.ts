@@ -49,6 +49,7 @@ const CONTATOS = [
   { nome: "Fernanda Duarte", telefone: "43 99920-5504", email: null },
   { nome: "Sérgio Batista", telefone: "43 99311-6672", email: "sergio.b@email.com" },
   { nome: "Luciana Prado", telefone: "43 99845-2213", email: null },
+  { nome: "Cliente da apresentação", telefone: "43 99999-0000", email: null },
 ];
 
 const minutosAtras = (base: Date, minutos: number) =>
