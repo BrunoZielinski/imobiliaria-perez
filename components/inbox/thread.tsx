@@ -1,9 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { format } from "date-fns";
-import { ChevronRight, Paperclip, Phone, Send, Sparkles } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { ChevronRight, ListChecks, Paperclip, Phone, Send, Sparkles } from "lucide-react";
 import { useCrm } from "@/lib/store/crm-store";
 import { enviarMensagem, assumirConversa } from "@/lib/data";
 import { FichaLead } from "@/components/inbox/ficha-lead";
@@ -21,6 +19,9 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { DEPARTAMENTOS } from "@/lib/tipos";
+import { rotuloModoTriagem } from "@/lib/inbox/apresentacao";
+import { MensagemHistorica } from "@/components/inbox/mensagem-historica";
+import { Badge } from "@/components/ui/badge";
 
 export const Thread = ({ conversaId }: { conversaId: string | null }) => {
   const [rascunho, setRascunho] = useState("");
@@ -51,6 +52,25 @@ export const Thread = ({ conversaId }: { conversaId: string | null }) => {
     setRascunho("");
   };
 
+  const rotuloModo = rotuloModoTriagem(conversa.modoTriagem);
+  const contexto = {
+    ana: {
+      titulo: "Contexto organizado pela Ana",
+      Icone: Sparkles,
+      classe: "border-violet-200 bg-violet-50/60 text-violet-700",
+    },
+    manual: {
+      titulo: "Contexto informado pelo cliente",
+      Icone: ListChecks,
+      classe: "border-sky-200 bg-sky-50/60 text-sky-700",
+    },
+    direto: {
+      titulo: "Contexto do atendimento",
+      Icone: ListChecks,
+      classe: "border-slate-200 bg-slate-50 text-slate-700",
+    },
+  }[conversa.modoTriagem];
+
   return (
     <div className="flex min-w-0 flex-1 flex-col bg-[#fafafa]">
       <header className="flex h-[72px] shrink-0 items-center justify-between border-b bg-background px-5">
@@ -66,6 +86,18 @@ export const Thread = ({ conversaId }: { conversaId: string | null }) => {
             <p className="text-sm font-bold">{contato?.nome}</p>
             <div className="mt-1 flex items-center gap-2 text-[10px] text-muted-foreground">
               <BadgeCanal canal={conversa.canal} />
+              {rotuloModo && (
+                <Badge
+                  variant="outline"
+                  className={
+                    conversa.modoTriagem === "ana"
+                      ? "h-5 border-violet-200 bg-violet-50 text-[9px] text-violet-700"
+                      : "h-5 border-sky-200 bg-sky-50 text-[9px] text-sky-700"
+                  }
+                >
+                  {rotuloModo}
+                </Badge>
+              )}
               <span>{contato?.telefone}</span>
               {conversa.departamento && (
                 <>
@@ -112,48 +144,21 @@ export const Thread = ({ conversaId }: { conversaId: string | null }) => {
       <ScrollArea className="min-h-0 flex-1">
         <div className="mx-auto flex w-full max-w-3xl flex-col gap-4 px-6 py-6">
           {conversa.contextoAna && (
-            <div className="mb-2 rounded-2xl border border-primary/15 bg-primary/[0.035] p-4">
-              <div className="flex items-center gap-2 text-[11px] font-bold text-primary">
-                <span className="flex size-6 items-center justify-center rounded-full bg-primary/10">
-                  <Sparkles className="size-3.5" />
+            <div className={`mb-2 rounded-2xl border p-4 ${contexto.classe}`}>
+              <div className="flex items-center gap-2 text-[11px] font-bold">
+                <span className="flex size-6 items-center justify-center rounded-full bg-white/70">
+                  <contexto.Icone className="size-3.5" />
                 </span>
-                Contexto organizado pela Ana
+                {contexto.titulo}
               </div>
               <p className="mt-2 text-xs leading-relaxed text-foreground/75">
                 {conversa.contextoAna}
               </p>
             </div>
           )}
-          {mensagens.map((mensagem) => {
-            const doContato = mensagem.autor === "contato";
-            const daAna = mensagem.autor === "ana";
-            return (
-              <div
-                key={mensagem.id}
-                className={cn("flex flex-col gap-1.5", !doContato && "items-end")}
-              >
-                {daAna && (
-                  <span className="flex items-center gap-1 text-[10px] font-semibold text-primary">
-                    <Sparkles className="size-3" /> Ana
-                  </span>
-                )}
-                <div
-                  className={cn(
-                    "max-w-[72%] whitespace-pre-wrap rounded-2xl px-4 py-2.5 text-[13px] leading-relaxed shadow-xs",
-                    doContato && "rounded-bl-md border bg-background",
-                    daAna && "rounded-br-md border border-primary/15 bg-primary/[0.04]",
-                    mensagem.autor === "atendente" &&
-                      "rounded-br-md bg-primary text-primary-foreground",
-                  )}
-                >
-                  {mensagem.texto}
-                </div>
-                <span className="text-[10px] text-muted-foreground">
-                  {format(new Date(mensagem.em), "dd/MM HH:mm")}
-                </span>
-              </div>
-            );
-          })}
+          {mensagens.map((mensagem) => (
+            <MensagemHistorica key={mensagem.id} mensagem={mensagem} />
+          ))}
         </div>
       </ScrollArea>
 

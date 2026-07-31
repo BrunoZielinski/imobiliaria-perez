@@ -1,6 +1,6 @@
 "use client";
 
-import { Sparkles } from "lucide-react";
+import { ListChecks, Sparkles } from "lucide-react";
 import { useCrm } from "@/lib/store/crm-store";
 import { moverLead, posicaoNaFila } from "@/lib/data";
 import { buscarPipeline } from "@/lib/mock/pipelines";
@@ -31,6 +31,11 @@ export const FichaLead = ({ conversaId }: { conversaId: string | null }) => {
 
   const pipeline = lead ? buscarPipeline(lead.pipeline) : null;
   const posicao = posicaoNaFila(dados, conversa.id);
+  const contexto = {
+    ana: { rotulo: "Organizado pela Ana", Icone: Sparkles },
+    manual: { rotulo: "Informado pelo cliente", Icone: ListChecks },
+    direto: { rotulo: "Contexto do atendimento", Icone: ListChecks },
+  }[conversa.modoTriagem];
 
   return (
     <div className="flex flex-col gap-5 overflow-y-auto px-5 pb-6">
@@ -53,7 +58,7 @@ export const FichaLead = ({ conversaId }: { conversaId: string | null }) => {
       {conversa.contextoAna && (
         <div className="rounded-md border border-dashed bg-muted/40 p-2">
           <p className="flex items-center gap-1 text-[10px] font-medium text-muted-foreground">
-            <Sparkles className="size-3" /> Captado pela Ana
+            <contexto.Icone className="size-3" /> {contexto.rotulo}
           </p>
           <p className="mt-1 text-xs">{conversa.contextoAna}</p>
         </div>
