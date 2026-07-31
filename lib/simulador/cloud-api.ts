@@ -17,7 +17,7 @@ export type EventoCloud = {
 
 type SaidaCloud = {
   texto: string;
-  autor: "ana" | "atendente";
+  autor: "ana" | "atendente" | "sistema";
   em: string;
   wamid: string;
 };
@@ -67,7 +67,8 @@ export const eventosSaidaCloud = ({
   em,
   wamid,
 }: SaidaCloud): EventoCloud[] => {
-  const origem = autor === "ana" ? "Ana" : "Atendente";
+  const origem =
+    autor === "ana" ? "Ana" : autor === "atendente" ? "Atendente" : "Sistema";
   const base = `${wamid} · ${origem}`;
 
   return [

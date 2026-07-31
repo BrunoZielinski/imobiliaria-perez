@@ -1,10 +1,18 @@
 "use client";
 
 import { format } from "date-fns";
-import { Bot, CheckCircle2, Send, Sparkles, UserRound } from "lucide-react";
+import {
+  Bot,
+  CheckCircle2,
+  ListChecks,
+  Send,
+  Sparkles,
+  UserRound,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Atendente, Conversa, Mensagem } from "@/lib/tipos";
 import { DEPARTAMENTOS } from "@/lib/tipos";
+import type { SessaoManual } from "@/lib/simulador/sessao-manual";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -23,6 +31,9 @@ type Props = {
   mensagens: Mensagem[];
   resposta: string;
   enviando: boolean;
+  modo: "ia" | "manual";
+  iniciada: boolean;
+  sessaoManual: SessaoManual;
   aoAlterarResposta: (texto: string) => void;
   aoResponder: () => void;
 };
@@ -33,10 +44,20 @@ export const CentralAoVivo = ({
   mensagens,
   resposta,
   enviando,
+  modo,
+  iniciada,
+  sessaoManual,
   aoAlterarResposta,
   aoResponder,
-}: Props) => (
-  <section className="flex min-h-0 flex-col overflow-hidden rounded-2xl border bg-background shadow-sm">
+}: Props) => {
+  const statusAtual = conversa
+    ? ROTULO_STATUS[conversa.status]
+    : modo === "manual" && iniciada
+      ? "Triagem manual em andamento"
+      : "Aguardando cliente";
+
+  return (
+    <section className="flex min-h-0 flex-col overflow-hidden rounded-2xl border bg-background shadow-sm">
     <div className="border-b px-4 py-4">
       <div className="flex items-center justify-between gap-3">
         <div>
@@ -51,23 +72,55 @@ export const CentralAoVivo = ({
             "gap-1.5",
             conversa?.status === "atendimento" &&
               "border-emerald-200 bg-emerald-50 text-emerald-700",
+            modo === "manual" &&
+              iniciada &&
+              !conversa &&
+              "border-sky-200 bg-sky-50 text-sky-700",
           )}
         >
           <span className="size-1.5 rounded-full bg-current" />
-          {conversa ? ROTULO_STATUS[conversa.status] : "Aguardando cliente"}
+          {statusAtual}
         </Badge>
       </div>
     </div>
 
     {!conversa ? (
       <div className="flex flex-1 flex-col items-center justify-center p-8 text-center">
-        <span className="flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-          <Bot className="size-5" />
+        <span
+          className={cn(
+            "flex size-12 items-center justify-center rounded-2xl",
+            modo === "manual" && iniciada
+              ? "bg-sky-50 text-sky-700"
+              : "bg-primary/10 text-primary",
+          )}
+        >
+          {modo === "manual" && iniciada ? (
+            <ListChecks className="size-5" />
+          ) : (
+            <Bot className="size-5" />
+          )}
         </span>
-        <p className="mt-4 text-sm font-bold">A central está pronta</p>
-        <p className="mt-1 max-w-64 text-xs leading-relaxed text-muted-foreground">
-          A primeira mensagem enviada no celular abrirá automaticamente um atendimento.
-        </p>
+        {modo === "manual" && iniciada ? (
+          <>
+            <p className="mt-4 text-sm font-bold">Triagem manual em andamento</p>
+            {sessaoManual.assunto && (
+              <span className="mt-2 rounded-full bg-sky-50 px-2.5 py-1 text-[10px] font-semibold text-sky-700">
+                {sessaoManual.assunto}
+              </span>
+            )}
+            <p className="mt-2 max-w-72 text-xs leading-relaxed text-muted-foreground">
+              O departamento é definido pelo ID oficial da opção escolhida, sem IA e sem
+              menu numérico.
+            </p>
+          </>
+        ) : (
+          <>
+            <p className="mt-4 text-sm font-bold">A central está pronta</p>
+            <p className="mt-1 max-w-64 text-xs leading-relaxed text-muted-foreground">
+              A primeira mensagem enviada no celular abrirá automaticamente um atendimento.
+            </p>
+          </>
+        )}
       </div>
     ) : (
       <>
@@ -92,8 +145,14 @@ export const CentralAoVivo = ({
           <div className="border-b p-4">
             <div className="rounded-xl border border-primary/15 bg-primary/[0.035] p-3">
               <p className="flex items-center gap-1.5 text-[10px] font-bold text-primary">
-                <Sparkles className="size-3.5" />
-                Contexto organizado pela Ana
+                {modo === "manual" ? (
+                  <ListChecks className="size-3.5" />
+                ) : (
+                  <Sparkles className="size-3.5" />
+                )}
+                {modo === "manual"
+                  ? "Contexto informado pelo cliente"
+                  : "Contexto organizado pela Ana"}
               </p>
               <p className="mt-1.5 text-[11px] leading-relaxed text-foreground/70">
                 {conversa.contextoAna}
@@ -178,4 +237,5 @@ export const CentralAoVivo = ({
       </>
     )}
   </section>
-);
+  );
+};

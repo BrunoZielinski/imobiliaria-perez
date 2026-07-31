@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Play, RotateCcw, ShieldCheck } from "lucide-react";
+import { Bot, ListChecks, Play, RotateCcw, ShieldCheck } from "lucide-react";
 import { CelularCliente } from "@/components/simulacao/celular-cliente";
 import { CentralAoVivo } from "@/components/simulacao/central-ao-vivo";
 import { EventosCloud } from "@/components/simulacao/eventos-cloud";
@@ -9,10 +9,23 @@ import { Button } from "@/components/ui/button";
 import { receberMensagem, enviarMensagem } from "@/lib/data";
 import {
   eventosEntradaCloud,
+  eventosEntradaInterativaCloud,
   eventosSaidaCloud,
+  eventosSaidaInterativaCloud,
   type EventoCloud,
 } from "@/lib/simulador/cloud-api";
+import { ASSUNTOS_CLIENTE, OPCOES_INICIAIS } from "@/lib/simulador/fluxo-manual";
+import {
+  concluirDescricaoManual,
+  criarSessaoManual,
+  iniciarAtendimentoManual,
+  selecionarAssuntoManual,
+  selecionarOpcaoManual,
+} from "@/lib/simulador/sessao-manual";
+import { conversaAtivaDaSimulacao } from "@/lib/simulador/estado-demo";
 import { useCrm } from "@/lib/store/crm-store";
+import { cn } from "@/lib/utils";
+import type { Departamento } from "@/lib/tipos";
 
 const CONTATO_DEMO_ID = "ct-9";
 const INICIO_DEMO = new Date("2026-07-30T10:00:00-03:00").getTime();
@@ -24,50 +37,181 @@ const CONTATO_DEMO = {
   criadoEm: new Date(INICIO_DEMO).toISOString(),
 };
 
+const RESPOSTAS_POR_DEPARTAMENTO: Record<Departamento, string> = {
+  comercial:
+    "Olá! Recebi seu interesse em um imóvel. Vou entender o que você procura e apresentar as melhores opções.",
+  administrativo:
+    "Boa tarde! Aqui é a Zilda, do Financeiro da Perez. Recebi todo o contexto e vou verificar a situação da multa para você.",
+  recepcao:
+    "Olá! Aqui é a Bianca, da Recepção Perez. Recebi sua solicitação e vou orientar você por aqui.",
+};
+
+type ModoSimulacao = "ia" | "manual";
+
 const SimulacaoPage = () => {
   const dados = useCrm((s) => s.dados);
   const aplicar = useCrm((s) => s.aplicar);
+  const [modo, setModo] = useState<ModoSimulacao>("manual");
   const [iniciada, setIniciada] = useState(false);
   const [enviando, setEnviando] = useState(false);
   const [rascunho, setRascunho] = useState("");
   const [resposta, setResposta] = useState(
-    "Boa tarde! Aqui é a Zilda, do Financeiro da Perez. Recebi todo o contexto e vou verificar a situação da multa para você.",
+    RESPOSTAS_POR_DEPARTAMENTO.administrativo,
   );
   const [eventos, setEventos] = useState<EventoCloud[]>([]);
+  const [sessaoManual, setSessaoManual] = useState(criarSessaoManual);
   const relogio = useRef(INICIO_DEMO);
 
-  const conversa = dados.conversas.find(
-    (item) => item.contatoId === CONTATO_DEMO_ID && item.status !== "encerrada",
+  const conversa = conversaAtivaDaSimulacao(
+    dados.conversas,
+    CONTATO_DEMO_ID,
+    iniciada,
   );
-  const mensagens = dados.mensagens.filter((mensagem) => mensagem.conversaId === conversa?.id);
+  const mensagens = dados.mensagens.filter(
+    (mensagem) => mensagem.conversaId === conversa?.id,
+  );
   const responsavel = dados.atendentes.find(
     (atendente) => atendente.id === conversa?.atendenteId,
   );
 
-  const prepararSimulacao = () => {
+  const limparDadosDaSimulacao = () => {
     aplicar((estado) => {
       const conversasDemo = estado.conversas
         .filter((item) => item.contatoId === CONTATO_DEMO_ID)
         .map((item) => item.id);
       const idsDemo = new Set(conversasDemo);
-      const contatoExiste = estado.contatos.some((contato) => contato.id === CONTATO_DEMO_ID);
+      const contatoExiste = estado.contatos.some(
+        (contato) => contato.id === CONTATO_DEMO_ID,
+      );
 
       return {
         ...estado,
-        contatos: contatoExiste ? estado.contatos : [...estado.contatos, CONTATO_DEMO],
+        contatos: contatoExiste
+          ? estado.contatos
+          : [...estado.contatos, CONTATO_DEMO],
         conversas: estado.conversas.filter((item) => !idsDemo.has(item.id)),
-        mensagens: estado.mensagens.filter((mensagem) => !idsDemo.has(mensagem.conversaId)),
+        mensagens: estado.mensagens.filter(
+          (mensagem) => !idsDemo.has(mensagem.conversaId),
+        ),
         eventos: estado.eventos.filter((evento) => !idsDemo.has(evento.conversaId)),
-        ponteiro: { ...estado.ponteiro, administrativo: 0 },
+        ponteiro: { ...estado.ponteiro, administrativo: 0, recepcao: 0 },
       };
     });
+  };
+
+  const reiniciarEstadoLocal = () => {
     relogio.current = INICIO_DEMO;
     setEventos([]);
     setRascunho("");
-    setResposta(
-      "Boa tarde! Aqui é a Zilda, do Financeiro da Perez. Recebi todo o contexto e vou verificar a situação da multa para você.",
-    );
+    setSessaoManual(criarSessaoManual());
+    setResposta(RESPOSTAS_POR_DEPARTAMENTO.administrativo);
+  };
+
+  const prepararSimulacao = () => {
+    limparDadosDaSimulacao();
+    reiniciarEstadoLocal();
     setIniciada(true);
+  };
+
+  const trocarModo = (novoModo: ModoSimulacao) => {
+    if (novoModo === modo || enviando) return;
+    limparDadosDaSimulacao();
+    reiniciarEstadoLocal();
+    setModo(novoModo);
+    setIniciada(false);
+  };
+
+  const enviarComAna = async (texto: string) => {
+    const agora = new Date(relogio.current);
+    const idsAntes = new Set(
+      useCrm.getState().dados.mensagens.map((mensagem) => mensagem.id),
+    );
+    setEventos((atuais) => [
+      ...atuais,
+      ...eventosEntradaCloud(texto, agora.toISOString()),
+    ]);
+
+    await receberMensagem({
+      contatoId: CONTATO_DEMO_ID,
+      canal: "whatsapp",
+      texto,
+      agora,
+    });
+
+    const novasRespostas = useCrm
+      .getState()
+      .dados.mensagens.filter(
+        (mensagem) => !idsAntes.has(mensagem.id) && mensagem.autor !== "contato",
+      );
+    const eventosResposta = novasRespostas.flatMap((mensagem, indice) =>
+      eventosSaidaCloud({
+        texto: mensagem.texto,
+        autor: mensagem.autor === "atendente" ? "atendente" : "ana",
+        em: new Date(agora.getTime() + 2000 + indice * 5000).toISOString(),
+        wamid: `wamid.demo.${mensagem.id}`,
+      }),
+    );
+
+    setEventos((atuais) => [...atuais, ...eventosResposta]);
+  };
+
+  const enviarManual = async (texto: string) => {
+    const agora = new Date(relogio.current);
+
+    if (sessaoManual.etapa === "saudacao") {
+      const proxima = iniciarAtendimentoManual(
+        sessaoManual,
+        texto,
+        agora.toISOString(),
+      );
+      setSessaoManual(proxima);
+      setEventos((atuais) => [
+        ...atuais,
+        ...eventosEntradaCloud(texto, agora.toISOString()),
+        ...eventosSaidaInterativaCloud({
+          tipo: "button",
+          titulo: "Como podemos ajudar hoje?",
+          em: new Date(agora.getTime() + 2000).toISOString(),
+          wamid: "wamid.manual.menu-inicial",
+        }),
+      ]);
+      return;
+    }
+
+    if (sessaoManual.etapa !== "descricao") return;
+
+    const resultado = concluirDescricaoManual(
+      sessaoManual,
+      texto,
+      agora.toISOString(),
+    );
+    if (!resultado) return;
+
+    setSessaoManual(resultado.sessao);
+    setResposta(RESPOSTAS_POR_DEPARTAMENTO[resultado.departamento]);
+    setEventos((atuais) => [
+      ...atuais,
+      ...eventosEntradaCloud(texto, agora.toISOString()),
+    ]);
+
+    await receberMensagem({
+      contatoId: CONTATO_DEMO_ID,
+      canal: "whatsapp",
+      texto: resultado.contexto,
+      agora,
+      departamentoDireto: resultado.departamento,
+    });
+
+    const confirmacao = resultado.sessao.registros.at(-1)?.texto ?? "";
+    setEventos((atuais) => [
+      ...atuais,
+      ...eventosSaidaCloud({
+        texto: confirmacao,
+        autor: "sistema",
+        em: new Date(agora.getTime() + 2000).toISOString(),
+        wamid: "wamid.manual.confirmacao",
+      }),
+    ]);
   };
 
   const enviarComoCliente = async () => {
@@ -76,37 +220,81 @@ const SimulacaoPage = () => {
 
     setEnviando(true);
     try {
-      const agora = new Date(relogio.current);
-      const idsAntes = new Set(useCrm.getState().dados.mensagens.map((mensagem) => mensagem.id));
-      setEventos((atuais) => [...atuais, ...eventosEntradaCloud(texto, agora.toISOString())]);
-
-      await receberMensagem({
-        contatoId: CONTATO_DEMO_ID,
-        canal: "whatsapp",
-        texto,
-        agora,
-      });
-
-      const novasRespostas = useCrm
-        .getState()
-        .dados.mensagens.filter(
-          (mensagem) => !idsAntes.has(mensagem.id) && mensagem.autor !== "contato",
-        );
-      const eventosResposta = novasRespostas.flatMap((mensagem, indice) =>
-        eventosSaidaCloud({
-          texto: mensagem.texto,
-          autor: mensagem.autor === "atendente" ? "atendente" : "ana",
-          em: new Date(relogio.current + 2000 + indice * 5000).toISOString(),
-          wamid: `wamid.demo.${mensagem.id}`,
-        }),
-      );
-
-      setEventos((atuais) => [...atuais, ...eventosResposta]);
+      if (modo === "manual") {
+        await enviarManual(texto);
+      } else {
+        await enviarComAna(texto);
+      }
       setRascunho("");
       relogio.current += 60_000;
     } finally {
       setEnviando(false);
     }
+  };
+
+  const selecionarOpcaoInicial = (id: string) => {
+    if (!iniciada || enviando || sessaoManual.etapa !== "opcao_inicial") return;
+
+    const agora = new Date(relogio.current);
+    const opcao = OPCOES_INICIAIS.find((item) => item.id === id);
+    const proxima = selecionarOpcaoManual(sessaoManual, id, agora.toISOString());
+    if (!opcao || !proxima) return;
+
+    const respostaSistema = proxima.registros.at(-1)?.texto ?? "";
+    const eventoSaida =
+      proxima.etapa === "assuntos"
+        ? eventosSaidaInterativaCloud({
+            tipo: "list",
+            titulo: respostaSistema,
+            em: new Date(agora.getTime() + 2000).toISOString(),
+            wamid: "wamid.manual.lista-assuntos",
+          })
+        : eventosSaidaCloud({
+            texto: respostaSistema,
+            autor: "sistema",
+            em: new Date(agora.getTime() + 2000).toISOString(),
+            wamid: `wamid.manual.descricao.${id}`,
+          });
+
+    setSessaoManual(proxima);
+    setEventos((atuais) => [
+      ...atuais,
+      ...eventosEntradaInterativaCloud({
+        tipo: "button_reply",
+        id,
+        titulo: opcao.titulo,
+        em: agora.toISOString(),
+      }),
+      ...eventoSaida,
+    ]);
+    relogio.current += 60_000;
+  };
+
+  const selecionarAssunto = (id: string) => {
+    if (!iniciada || enviando || sessaoManual.etapa !== "assuntos") return;
+
+    const agora = new Date(relogio.current);
+    const assunto = ASSUNTOS_CLIENTE.find((item) => item.id === id);
+    const proxima = selecionarAssuntoManual(sessaoManual, id, agora.toISOString());
+    if (!assunto || !proxima) return;
+
+    setSessaoManual(proxima);
+    setEventos((atuais) => [
+      ...atuais,
+      ...eventosEntradaInterativaCloud({
+        tipo: "list_reply",
+        id,
+        titulo: assunto.titulo,
+        em: agora.toISOString(),
+      }),
+      ...eventosSaidaCloud({
+        texto: proxima.registros.at(-1)?.texto ?? "",
+        autor: "sistema",
+        em: new Date(agora.getTime() + 2000).toISOString(),
+        wamid: `wamid.manual.contexto.${id}`,
+      }),
+    ]);
+    relogio.current += 60_000;
   };
 
   const responderComoAtendente = async () => {
@@ -116,12 +304,15 @@ const SimulacaoPage = () => {
     setEnviando(true);
     try {
       const agora = new Date(relogio.current);
-      const idsAntes = new Set(useCrm.getState().dados.mensagens.map((mensagem) => mensagem.id));
+      const idsAntes = new Set(
+        useCrm.getState().dados.mensagens.map((mensagem) => mensagem.id),
+      );
       await enviarMensagem(conversa.id, texto, agora);
       const enviada = useCrm
         .getState()
         .dados.mensagens.find(
-          (mensagem) => !idsAntes.has(mensagem.id) && mensagem.autor === "atendente",
+          (mensagem) =>
+            !idsAntes.has(mensagem.id) && mensagem.autor === "atendente",
         );
 
       if (enviada) {
@@ -144,8 +335,8 @@ const SimulacaoPage = () => {
 
   return (
     <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border bg-[#f5f6f7] shadow-sm">
-      <header className="flex shrink-0 items-center justify-between border-b bg-background px-5 py-4">
-        <div>
+      <header className="flex shrink-0 items-center justify-between gap-5 border-b bg-background px-5 py-3.5">
+        <div className="min-w-0">
           <div className="flex items-center gap-2">
             <span className="rounded-full bg-primary/10 px-2 py-1 text-[9px] font-bold uppercase tracking-[0.14em] text-primary">
               Modo apresentação
@@ -155,16 +346,81 @@ const SimulacaoPage = () => {
               Nenhuma mensagem real será enviada
             </span>
           </div>
-          <h1 className="mt-2 text-xl font-bold tracking-tight">Simulação ao vivo do cliente</h1>
-          <p className="mt-0.5 text-xs text-muted-foreground">
-            Digite no celular e acompanhe a mensagem atravessar a Cloud API até a Central Perez.
+          <h1 className="mt-1.5 text-xl font-bold tracking-tight">
+            Simulação ao vivo do cliente
+          </h1>
+          <p className="mt-0.5 truncate text-xs text-muted-foreground">
+            {modo === "manual"
+              ? "Fluxo determinístico com botões e lista permitidos pela Meta, sem IA."
+              : "Texto livre classificado pela Ana e distribuído para a Central Perez."}
           </p>
         </div>
-        <Button type="button" onClick={prepararSimulacao}>
-          {iniciada ? <RotateCcw className="size-4" /> : <Play className="size-4 fill-current" />}
-          {iniciada ? "Reiniciar simulação" : "Iniciar simulação"}
-        </Button>
+
+        <div className="flex shrink-0 items-center gap-3">
+          <div
+            role="group"
+            aria-label="Modo da simulação"
+            className="flex rounded-xl border bg-muted/45 p-1"
+          >
+            <button
+              type="button"
+              aria-pressed={modo === "ia"}
+              onClick={() => trocarModo("ia")}
+              className={cn(
+                "flex items-center gap-1.5 rounded-lg px-3 py-2 text-[10px] font-semibold transition",
+                modo === "ia"
+                  ? "bg-background text-primary shadow-sm"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              <Bot className="size-3.5" />
+              Com Ana (IA)
+            </button>
+            <button
+              type="button"
+              aria-pressed={modo === "manual"}
+              onClick={() => trocarModo("manual")}
+              className={cn(
+                "flex items-center gap-1.5 rounded-lg px-3 py-2 text-[10px] font-semibold transition",
+                modo === "manual"
+                  ? "bg-background text-sky-700 shadow-sm"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              <ListChecks className="size-3.5" />
+              Manual Meta
+            </button>
+          </div>
+
+          <Button type="button" onClick={prepararSimulacao}>
+            {iniciada ? (
+              <RotateCcw className="size-4" />
+            ) : (
+              <Play className="size-4 fill-current" />
+            )}
+            {iniciada ? "Reiniciar" : "Iniciar simulação"}
+          </Button>
+        </div>
       </header>
+
+      <div className="flex shrink-0 items-center gap-2 border-b bg-background/70 px-5 py-2">
+        <span className="text-[9px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+          Escopo demonstrado
+        </span>
+        {["WhatsApp oficial", "Triagem", "Distribuição", "Atendimento humano"].map(
+          (item) => (
+            <span
+              key={item}
+              className="rounded-full border bg-background px-2 py-0.5 text-[9px] font-medium text-foreground/70"
+            >
+              {item}
+            </span>
+          ),
+        )}
+        <span className="ml-auto text-[9px] text-muted-foreground">
+          Protótipo visual · escopo controlado
+        </span>
+      </div>
 
       <div className="min-h-0 flex-1 overflow-x-auto p-4">
         <div className="grid h-full min-w-[1050px] grid-cols-[minmax(320px,0.9fr)_minmax(250px,0.65fr)_minmax(380px,1.15fr)] gap-4">
@@ -173,8 +429,12 @@ const SimulacaoPage = () => {
             rascunho={rascunho}
             iniciada={iniciada}
             enviando={enviando}
+            modo={modo}
+            sessaoManual={sessaoManual}
             aoAlterarRascunho={setRascunho}
             aoEnviar={enviarComoCliente}
+            aoSelecionarOpcaoInicial={selecionarOpcaoInicial}
+            aoSelecionarAssunto={selecionarAssunto}
           />
           <EventosCloud eventos={eventos} />
           <CentralAoVivo
@@ -183,6 +443,9 @@ const SimulacaoPage = () => {
             mensagens={mensagens}
             resposta={resposta}
             enviando={enviando}
+            modo={modo}
+            iniciada={iniciada}
+            sessaoManual={sessaoManual}
             aoAlterarResposta={setResposta}
             aoResponder={responderComoAtendente}
           />
