@@ -424,3 +424,16 @@ export const gerarKitConteudo = (configuracao: ConfiguracaoGeracao): KitConteudo
     formato: configuracao.formato,
   };
 };
+
+export const criarConteudoDoKit = (kit: KitConteudoIA, id: string): ConteudoMarketing => ({
+  id,
+  titulo: `Campanha IA · ${kit.codigoImovel}`,
+  descricao: kit.conceito,
+  canais: kit.canais,
+  formato: kit.formato,
+  status: "revisao",
+  responsavel: "Marina Costa",
+  data: "2026-08-12T10:00:00-03:00",
+  imovelId: kit.imovelId,
+  observacao: "Conteúdo criado no Estúdio IA e enviado para revisão interna.",
+});

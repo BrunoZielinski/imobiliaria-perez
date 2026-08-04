@@ -5,6 +5,7 @@ import {
   CAMPANHAS_MARKETING,
   CONTEUDOS_MARKETING,
   calcularResumoMarketing,
+  criarConteudoDoKit,
   filtrarConteudos,
   formatarPercentual,
   gerarKitConteudo,
@@ -70,6 +71,28 @@ describe("marketing Perez 360", () => {
     expect(kit.titulosGoogle).toHaveLength(3);
     expect(kit.roteiroVideo.length).toBeGreaterThan(3);
     expect(kit.aderenciaMarca).toBe(96);
+  });
+
+  it("transforma o kit gerado em conteúdo para revisão", () => {
+    const kit = gerarKitConteudo({
+      imovelId: "imovel-01",
+      objetivo: "vender",
+      publico: "Famílias de Londrina",
+      canais: ["instagram", "google"],
+      formato: "carrossel",
+      tom: "sofisticado",
+      cta: "Agende sua visita",
+    });
+
+    expect(criarConteudoDoKit(kit, "conteudo-ia-01")).toMatchObject({
+      id: "conteudo-ia-01",
+      titulo: "Campanha IA · PZ-1001",
+      canais: ["instagram", "google"],
+      formato: "carrossel",
+      status: "revisao",
+      responsavel: "Marina Costa",
+      imovelId: "imovel-01",
+    });
   });
 
   it("avança somente pela sequência de aprovação", () => {
