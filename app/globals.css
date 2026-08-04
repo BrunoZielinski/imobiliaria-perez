@@ -53,6 +53,11 @@
 
 :root {
   --font-ui: "Avenir Next", Avenir, "Segoe UI", Helvetica, Arial, sans-serif;
+  --perez-red: #b52235;
+  --perez-red-dark: #861928;
+  --perez-ink: #19191b;
+  --perez-paper: #f7f4ef;
+  --perez-cream: #eee7dc;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -136,5 +141,27 @@
   }
   html {
     @apply font-sans;
+  }
+}
+
+@utility scrollbar-hide {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+::selection {
+  background: color-mix(in srgb, var(--perez-red) 20%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
   }
 }

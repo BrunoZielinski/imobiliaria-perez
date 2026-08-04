@@ -2,8 +2,12 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "CRM — Imobiliária Perez",
-  description: "Central de atendimento e vendas da Imobiliária Perez",
+  title: {
+    default: "Imobiliária Perez — Imóveis em Londrina",
+    template: "%s | Imobiliária Perez",
+  },
+  description:
+    "Encontre imóveis para comprar, alugar ou investir em Londrina com a experiência de mais de 35 anos da Imobiliária Perez.",
 };
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => (
