@@ -4,6 +4,7 @@ export type IconeNavegacao =
   | "mensagens"
   | "pipeline"
   | "contatos"
+  | "marketing"
   | "imoveis"
   | "captacoes"
   | "contratos"
@@ -38,6 +39,10 @@ export const GRUPOS_NAVEGACAO: GrupoNavegacao[] = [
       { href: "/pipelines", rotulo: "CRM comercial", icone: "pipeline" },
       { href: "/contatos", rotulo: "Pessoas", icone: "contatos" },
     ],
+  },
+  {
+    rotulo: "Comunicação",
+    itens: [{ href: "/marketing", rotulo: "Marketing", icone: "marketing" }],
   },
   {
     rotulo: "Imóveis e locação",

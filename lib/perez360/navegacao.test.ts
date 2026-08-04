@@ -9,6 +9,7 @@ describe("navegação Perez 360", () => {
     expect(rotas).toEqual(
       expect.arrayContaining([
         "/dashboard",
+        "/marketing",
         "/inbox",
         "/pipelines",
         "/contatos",
@@ -22,6 +23,10 @@ describe("navegação Perez 360", () => {
         "/configuracoes",
       ]),
     );
+
+    const marketing = GRUPOS_NAVEGACAO.flatMap((grupo) => grupo.itens)
+      .find((item) => item.href === "/marketing");
+    expect(marketing).toEqual({ href: "/marketing", rotulo: "Marketing", icone: "marketing" });
   });
 
   it("identifica somente módulos financeiros como demonstrativos adicionais", () => {
