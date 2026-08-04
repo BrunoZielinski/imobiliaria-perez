@@ -13,6 +13,7 @@ import { ProgramarLembrete } from "@/components/cobrancas/programar-lembrete";
 import { ResumoCobrancas } from "@/components/cobrancas/resumo-cobrancas";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { AvisoDemonstracao } from "@/components/gestao/aviso-demonstracao";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -88,6 +89,11 @@ const CobrancasPage = () => {
             Programar lembrete
           </Button>
         </header>
+
+        <AvisoDemonstracao
+          titulo="Lembretes demonstrativos"
+          descricao="A agenda não envia mensagens, não consulta pagamentos e não gera cobranças reais."
+        />
 
         <div className="flex items-center justify-between gap-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-amber-900">
           <div className="flex items-center gap-3">

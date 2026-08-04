@@ -7,6 +7,8 @@ import { PIPELINES, ETAPAS_TERMINAIS } from "@/lib/mock/pipelines";
 import { CANAIS, DEPARTAMENTOS, SLA_PRIMEIRA_RESPOSTA_MIN } from "@/lib/tipos";
 import type { Canal, Departamento } from "@/lib/tipos";
 import { Progress } from "@/components/ui/progress";
+import { AlertasExecutivos } from "@/components/gestao/alertas-executivos";
+import { calcularIndicadoresExecutivos } from "@/lib/perez360/indicadores";
 
 const moeda = (valor: number) =>
   valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 });
@@ -38,6 +40,7 @@ const DashboardPage = () => {
   const valorEmNegociacao = dados.leads
     .filter((lead) => !ETAPAS_TERMINAIS.has(lead.etapaId))
     .reduce((soma, lead) => soma + lead.valor, 0);
+  const executivos = calcularIndicadoresExecutivos();
 
   return (
     <div className="h-full overflow-y-auto">
@@ -63,7 +66,14 @@ const DashboardPage = () => {
         <CartaoMetrica rotulo="Em negociação" valor={moeda(valorEmNegociacao)} />
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
+        <CartaoMetrica rotulo="Imóveis ativos" valor={String(executivos.imoveisAtivos)} apoio="mesma base do site" />
+        <CartaoMetrica rotulo="Ocupação da carteira" valor={`${executivos.ocupacao}%`} apoio="dado demonstrativo" />
+        <CartaoMetrica rotulo="Contratos com atenção" valor={String(executivos.contratosAtencao)} />
+        <CartaoMetrica rotulo="Manutenções abertas" valor={String(executivos.manutencoesAbertas)} />
+      </div>
+
+      <div className="grid gap-3 lg:grid-cols-2">
         <div className="rounded-2xl border bg-background p-5 shadow-xs">
           <p className="mb-4 text-sm font-bold">Conversas por canal</p>
           <div className="flex flex-col gap-3">
@@ -97,7 +107,7 @@ const DashboardPage = () => {
 
       <div className="rounded-2xl border bg-background p-5 shadow-xs">
         <p className="mb-4 text-sm font-bold">Leads por pipeline</p>
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
           {PIPELINES.map((pipeline) => (
             <div key={pipeline.id} className="rounded-xl bg-muted/45 px-4 py-3">
               <p className="text-xs text-muted-foreground">{pipeline.nome}</p>
@@ -108,6 +118,7 @@ const DashboardPage = () => {
           ))}
         </div>
       </div>
+      <AlertasExecutivos />
       </div>
     </div>
   );
