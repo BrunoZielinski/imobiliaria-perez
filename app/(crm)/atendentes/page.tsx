@@ -30,7 +30,7 @@ const AtendentesPage = () => {
 
   return (
     <div className="h-full overflow-y-auto">
-      <div className="mx-auto flex max-w-7xl flex-col gap-5 p-5">
+      <div className="mx-auto flex max-w-7xl flex-col gap-5 p-3 sm:p-5">
       <div>
         <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-primary">
           Distribuição inteligente
@@ -41,7 +41,7 @@ const AtendentesPage = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         {(Object.keys(DEPARTAMENTOS) as Departamento[]).map((departamento) => (
           <div key={departamento} className="rounded-2xl border bg-background p-4 shadow-xs">
             <p className="text-xs font-medium text-muted-foreground">{DEPARTAMENTOS[departamento]}</p>
@@ -51,14 +51,15 @@ const AtendentesPage = () => {
         ))}
       </div>
 
-      <div className="overflow-hidden rounded-2xl border bg-background shadow-xs">
+      <div className="rounded-2xl border bg-background shadow-xs">
         <div className="border-b px-5 py-4">
           <p className="text-sm font-bold">Operação da equipe</p>
           <p className="text-[11px] text-muted-foreground">
             O rodízio respeita disponibilidade, departamento e limite de atendimentos.
           </p>
         </div>
-        <Table>
+        <div className="grid gap-2 p-3 md:hidden">{dados.atendentes.map((atendente) => <article key={atendente.id} className="rounded-xl border p-3"><div className="flex items-center gap-3"><span className="flex size-8 items-center justify-center rounded-full bg-primary/10 text-[10px] font-bold text-primary">{atendente.nome.split(" ").slice(0, 2).map((nome) => nome[0]).join("")}</span><span className="min-w-0 flex-1"><b className="block truncate text-xs">{atendente.nome}</b><span className="text-[10px] text-muted-foreground">{ROTULO_PAPEL[atendente.papel]} · {carga[atendente.id] ?? 0}/{TETO_ATENDIMENTOS} atendimentos</span></span><Switch checked={atendente.disponivel} onCheckedChange={() => alternarDisponibilidade(atendente.id)} aria-label={`Disponibilidade de ${atendente.nome}`} /></div><div className="mt-3 flex flex-wrap gap-1">{atendente.departamentos.map((departamento) => <Badge key={departamento} variant="outline" className="text-[9px]">{DEPARTAMENTOS[departamento]}</Badge>)}</div></article>)}</div>
+        <div className="hidden overflow-x-auto md:block"><Table>
         <TableHeader>
           <TableRow>
             <TableHead>Atendente</TableHead>
@@ -107,7 +108,7 @@ const AtendentesPage = () => {
             </TableRow>
           ))}
         </TableBody>
-      </Table>
+      </Table></div>
       </div>
       </div>
     </div>

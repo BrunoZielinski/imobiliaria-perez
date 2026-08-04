@@ -33,7 +33,7 @@ const ATENDENTES: Atendente[] = [
 ];
 
 const IMOVEIS: Imovel[] = [
-  { id: "im-1", codigo: "PZ-1042", tipo: "apartamento", bairro: "Gleba Palhano", valor: 780000, finalidade: "venda" },
+  { id: "im-1", codigo: "PZ-1001", tipo: "apartamento", bairro: "Gleba Palhano", valor: 1280000, finalidade: "venda" },
   { id: "im-2", codigo: "PZ-2210", tipo: "apartamento", bairro: "Centro", valor: 2400, finalidade: "locacao" },
   { id: "im-3", codigo: "PZ-3388", tipo: "casa", bairro: "Jardim Higienópolis", valor: 1250000, finalidade: "venda" },
   { id: "im-4", codigo: "PZ-4501", tipo: "casa", bairro: "Vila Nova", valor: 3800, finalidade: "locacao" },
@@ -66,7 +66,7 @@ export const criarSeed = (base: Date): EstadoCrm => {
   }));
 
   const conversas: Conversa[] = [
-    { id: "cv-1", contatoId: "ct-1", canal: "whatsapp", modoTriagem: "ana", departamento: "comercial", status: "atendimento", atendenteId: "at-1", criadaEm: minutosAtras(base, 95), entrouNaFilaEm: minutosAtras(base, 93), primeiraRespostaEm: minutosAtras(base, 88), contextoAna: "quero comprar um apartamento na Gleba Palhano", naoLidas: 2 },
+    { id: "cv-1", contatoId: "ct-1", canal: "site", modoTriagem: "direto", departamento: "comercial", status: "atendimento", atendenteId: "at-1", criadaEm: minutosAtras(base, 95), entrouNaFilaEm: minutosAtras(base, 93), primeiraRespostaEm: minutosAtras(base, 88), contextoAna: "Interesse enviado pela ficha do imóvel PZ-1001, na Gleba Palhano.", naoLidas: 2 },
     { id: "cv-2", contatoId: "ct-2", canal: "whatsapp", modoTriagem: "ana", departamento: "comercial", status: "fila", atendenteId: null, criadaEm: minutosAtras(base, 22), entrouNaFilaEm: minutosAtras(base, 20), primeiraRespostaEm: null, contextoAna: "tem casa pra alugar no centro?", naoLidas: 1 },
     { id: "cv-3", contatoId: "ct-3", canal: "site", modoTriagem: "direto", departamento: "comercial", status: "atendimento", atendenteId: "at-2", criadaEm: minutosAtras(base, 240), entrouNaFilaEm: minutosAtras(base, 240), primeiraRespostaEm: minutosAtras(base, 231), contextoAna: null, naoLidas: 0 },
     { id: "cv-4", contatoId: "ct-4", canal: "whatsapp", modoTriagem: "ana", departamento: "administrativo", status: "atendimento", atendenteId: "at-5", criadaEm: minutosAtras(base, 180), entrouNaFilaEm: minutosAtras(base, 178), primeiraRespostaEm: minutosAtras(base, 170), contextoAna: "Tivemos um imprevisto de saúde na família e não conseguimos pagar o aluguel no vencimento. Gostaria de solicitar a revisão da multa, se possível.", naoLidas: 1 },
@@ -78,13 +78,13 @@ export const criarSeed = (base: Date): EstadoCrm => {
   ];
 
   const mensagens: Mensagem[] = [
-    { id: "ms-1", conversaId: "cv-1", autor: "contato", texto: "Boa tarde", em: minutosAtras(base, 95) },
-    { id: "ms-2", conversaId: "cv-1", autor: "ana", texto: SAUDACAO_ANA, em: minutosAtras(base, 95) },
-    { id: "ms-3", conversaId: "cv-1", autor: "contato", texto: "quero comprar um apartamento na Gleba Palhano", em: minutosAtras(base, 94) },
-    { id: "ms-4", conversaId: "cv-1", autor: "ana", texto: mensagemEncaminhando("comercial"), em: minutosAtras(base, 93) },
-    { id: "ms-5", conversaId: "cv-1", autor: "atendente", texto: "Olá, João! Aqui é o Carlos, da Perez. Temos ótimas opções na Gleba Palhano. Você procura de quantos dormitórios?", em: minutosAtras(base, 88) },
+    { id: "ms-1", conversaId: "cv-1", autor: "contato", texto: "Olá, gostaria de saber mais sobre o imóvel PZ-1001.", em: minutosAtras(base, 95) },
+    { id: "ms-2", conversaId: "cv-1", autor: "sistema", texto: "Contato recebido pelo novo site da Imobiliária Perez.", em: minutosAtras(base, 95) },
+    { id: "ms-3", conversaId: "cv-1", autor: "contato", texto: "Procuro um apartamento de 3 quartos na Gleba Palhano.", em: minutosAtras(base, 94) },
+    { id: "ms-4", conversaId: "cv-1", autor: "sistema", texto: "Interesse encaminhado com o contexto do imóvel para o Comercial.", em: minutosAtras(base, 93) },
+    { id: "ms-5", conversaId: "cv-1", autor: "atendente", texto: "Olá, João! Aqui é o Carlos, da Perez. Recebi seu interesse no PZ-1001 e já estou com todas as informações do apartamento.", em: minutosAtras(base, 88) },
     { id: "ms-6", conversaId: "cv-1", autor: "contato", texto: "3 dormitórios, com suíte se possível", em: minutosAtras(base, 84) },
-    { id: "ms-7", conversaId: "cv-1", autor: "atendente", texto: "Perfeito. Tenho o PZ-1042, 3 dormitórios com suíte, 96m², por R$ 780.000. Posso te enviar as fotos?", em: minutosAtras(base, 80) },
+    { id: "ms-7", conversaId: "cv-1", autor: "atendente", texto: "O PZ-1001 tem 3 dormitórios, 156m² e está anunciado por R$ 1.280.000. Posso te enviar as fotos e opções de visita?", em: minutosAtras(base, 80) },
     { id: "ms-8", conversaId: "cv-1", autor: "contato", texto: "Pode sim! Consigo visitar essa semana?", em: minutosAtras(base, 12) },
     { id: "ms-9", conversaId: "cv-1", autor: "contato", texto: "Prefiro quinta à tarde", em: minutosAtras(base, 11) },
 
@@ -125,7 +125,7 @@ export const criarSeed = (base: Date): EstadoCrm => {
   ];
 
   const leads: Lead[] = [
-    { id: "ld-1", contatoId: "ct-1", conversaId: "cv-1", pipeline: "venda", etapaId: "venda-visita-agendada", imovelId: "im-1", valor: 780000, responsavelId: "at-1", criadoEm: minutosAtras(base, 95), atualizadoEm: minutosAtras(base, 80) },
+    { id: "ld-1", contatoId: "ct-1", conversaId: "cv-1", pipeline: "venda", etapaId: "venda-visita-agendada", imovelId: "im-1", valor: 1280000, responsavelId: "at-1", criadoEm: minutosAtras(base, 95), atualizadoEm: minutosAtras(base, 80) },
     { id: "ld-2", contatoId: "ct-2", conversaId: "cv-2", pipeline: "locacao", etapaId: "loc-novo", imovelId: "im-2", valor: 2400, responsavelId: null, criadoEm: minutosAtras(base, 22), atualizadoEm: minutosAtras(base, 22) },
     { id: "ld-3", contatoId: "ct-3", conversaId: "cv-3", pipeline: "venda", etapaId: "venda-contato", imovelId: "im-3", valor: 1250000, responsavelId: "at-2", criadoEm: minutosAtras(base, 240), atualizadoEm: minutosAtras(base, 231) },
     { id: "ld-4", contatoId: "ct-5", conversaId: "cv-5", pipeline: "venda", etapaId: "venda-novo", imovelId: "im-5", valor: 610000, responsavelId: null, criadoEm: minutosAtras(base, 8), atualizadoEm: minutosAtras(base, 8) },
@@ -147,8 +147,11 @@ export const criarSeed = (base: Date): EstadoCrm => {
     contatos,
     conversas,
     mensagens,
-    atendentes: ATENDENTES,
-    imoveis: IMOVEIS,
+    atendentes: ATENDENTES.map((atendente) => ({
+      ...atendente,
+      departamentos: [...atendente.departamentos],
+    })),
+    imoveis: IMOVEIS.map((imovel) => ({ ...imovel })),
     leads,
     eventos,
     ponteiro: { comercial: 2, administrativo: 1, recepcao: 0 },

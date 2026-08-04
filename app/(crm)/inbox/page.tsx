@@ -8,7 +8,7 @@ import { conversasVisiveis, marcarComoLida } from "@/lib/data";
 import type { Departamento } from "@/lib/tipos";
 
 const InboxPage = () => {
-  const [selecionada, setSelecionada] = useState<string | null>("cv-4");
+  const [selecionada, setSelecionada] = useState<string | null>(null);
   const [filtro, setFiltro] = useState<Departamento | "todos">("todos");
 
   const dados = useCrm((s) => s.dados);
@@ -17,7 +17,9 @@ const InboxPage = () => {
 
   const visiveis = conversasVisiveis(dados, papel, usuarioId);
   const aindaVisivel = visiveis.some((conversa) => conversa.id === selecionada);
-  const conversaAtiva = aindaVisivel ? selecionada : (visiveis[0]?.id ?? null);
+  const conversaAtiva = aindaVisivel
+    ? selecionada
+    : (visiveis.find((conversa) => conversa.id === "cv-4")?.id ?? visiveis[0]?.id ?? null);
 
   useEffect(() => {
     if (conversaAtiva) marcarComoLida(conversaAtiva);
@@ -30,8 +32,13 @@ const InboxPage = () => {
         aoSelecionar={setSelecionada}
         filtro={filtro}
         aoFiltrar={setFiltro}
+        className={selecionada ? "hidden md:flex" : "flex"}
       />
-      <Thread conversaId={conversaAtiva} />
+      <Thread
+        conversaId={conversaAtiva}
+        aoVoltar={() => setSelecionada(null)}
+        className={selecionada ? "flex" : "hidden md:flex"}
+      />
     </div>
   );
 };

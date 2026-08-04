@@ -46,4 +46,15 @@ describe("exemplos de triagem no seed", () => {
       mensagens.some((mensagem) => mensagem.apresentacao?.tipo === "lista"),
     ).toBe(true);
   });
+
+  it("conecta o interesse do site ao imóvel principal PZ-1001", () => {
+    const imovel = estado.imoveis.find((item) => item.codigo === "PZ-1001");
+    const conversa = estado.conversas.find((item) => item.id === "cv-1");
+    const mensagens = estado.mensagens.filter((item) => item.conversaId === conversa?.id);
+    const lead = estado.leads.find((item) => item.conversaId === conversa?.id);
+
+    expect(imovel).toBeDefined();
+    expect(mensagens.some((item) => item.texto.includes("PZ-1001"))).toBe(true);
+    expect(lead?.imovelId).toBe(imovel?.id);
+  });
 });

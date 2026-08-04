@@ -15,7 +15,7 @@ export const SecaoImoveis = ({ titulo, imoveis }: { titulo: string; imoveis: Imo
         <Link href="/imoveis" className="inline-flex items-center gap-2 text-sm font-bold text-zinc-800 transition hover:text-[#b52235]">Ver todos os imóveis <ArrowRight className="size-4" /></Link>
       </div>
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-        {imoveis.map((imovel) => <CardImovel key={imovel.id} imovel={imovel} />)}
+        {imoveis.map((imovel, indice) => <CardImovel key={imovel.id} imovel={imovel} imagemPrioritaria={indice < 3} />)}
       </div>
     </div>
   </section>

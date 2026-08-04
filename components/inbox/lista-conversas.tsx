@@ -25,6 +25,7 @@ type Props = {
   aoSelecionar: (id: string) => void;
   filtro: Departamento | "todos";
   aoFiltrar: (filtro: Departamento | "todos") => void;
+  className?: string;
 };
 
 const ROTULO_STATUS: Record<StatusConversa, string> = {
@@ -34,7 +35,7 @@ const ROTULO_STATUS: Record<StatusConversa, string> = {
   encerrada: "Encerrada",
 };
 
-export const ListaConversas = ({ selecionada, aoSelecionar, filtro, aoFiltrar }: Props) => {
+export const ListaConversas = ({ selecionada, aoSelecionar, filtro, aoFiltrar, className }: Props) => {
   const [busca, setBusca] = useState("");
   const dados = useCrm((s) => s.dados);
   const papel = useCrm((s) => s.papel);
@@ -138,7 +139,7 @@ export const ListaConversas = ({ selecionada, aoSelecionar, filtro, aoFiltrar }:
   };
 
   return (
-    <div className="flex h-full w-[22rem] shrink-0 flex-col border-r max-xl:w-72">
+    <div className={cn("h-full w-full shrink-0 flex-col border-r md:flex md:w-72 xl:w-[22rem]", className)}>
       <div className="space-y-4 border-b px-4 py-4">
         <div className="flex items-start justify-between">
           <div>
@@ -160,8 +161,8 @@ export const ListaConversas = ({ selecionada, aoSelecionar, filtro, aoFiltrar }:
             className="h-9 bg-muted/45 pl-9 text-xs"
           />
         </div>
-        <Tabs value={filtro} onValueChange={(v) => aoFiltrar(v as Departamento | "todos")}>
-          <TabsList className="h-8 w-full bg-muted/70">
+        <Tabs value={filtro} onValueChange={(v) => aoFiltrar(v as Departamento | "todos")} className="overflow-x-auto">
+          <TabsList className="h-8 min-w-max bg-muted/70">
             <TabsTrigger value="todos" className="text-xs">
               Todos
             </TabsTrigger>

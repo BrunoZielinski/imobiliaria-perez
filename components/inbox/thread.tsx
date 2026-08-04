@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronRight, ListChecks, Paperclip, Phone, Send, Sparkles } from "lucide-react";
+import { ArrowLeft, ChevronRight, ListChecks, Paperclip, Phone, Send, Sparkles } from "lucide-react";
 import { useCrm } from "@/lib/store/crm-store";
 import { enviarMensagem, assumirConversa } from "@/lib/data";
 import { FichaLead } from "@/components/inbox/ficha-lead";
@@ -22,8 +22,9 @@ import { DEPARTAMENTOS } from "@/lib/tipos";
 import { rotuloModoTriagem } from "@/lib/inbox/apresentacao";
 import { MensagemHistorica } from "@/components/inbox/mensagem-historica";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
-export const Thread = ({ conversaId }: { conversaId: string | null }) => {
+export const Thread = ({ conversaId, aoVoltar, className }: { conversaId: string | null; aoVoltar?: () => void; className?: string }) => {
   const [rascunho, setRascunho] = useState("");
   const dados = useCrm((s) => s.dados);
   const usuarioId = useCrm((s) => s.usuarioId);
@@ -35,7 +36,7 @@ export const Thread = ({ conversaId }: { conversaId: string | null }) => {
 
   if (!conversa) {
     return (
-      <div className="flex min-w-0 flex-1 items-center justify-center">
+      <div className={cn("min-w-0 flex-1 items-center justify-center", className)}>
         <Empty>
           <EmptyHeader>
             <EmptyTitle>Nenhuma conversa selecionada</EmptyTitle>
@@ -72,9 +73,10 @@ export const Thread = ({ conversaId }: { conversaId: string | null }) => {
   }[conversa.modoTriagem];
 
   return (
-    <div className="flex min-w-0 flex-1 flex-col bg-[#fafafa]">
-      <header className="flex h-[72px] shrink-0 items-center justify-between border-b bg-background px-5">
-        <div className="flex items-center gap-3">
+    <div className={cn("min-w-0 flex-1 flex-col bg-[#fafafa]", className)}>
+      <header className="flex min-h-[72px] shrink-0 items-center justify-between gap-2 border-b bg-background px-3 py-2 sm:px-5">
+        <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+          {aoVoltar && <Button variant="ghost" size="icon-sm" className="md:hidden" onClick={aoVoltar} aria-label="Voltar às conversas"><ArrowLeft className="size-4" /></Button>}
           <span className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
             {contato?.nome
               .split(" ")
@@ -82,9 +84,9 @@ export const Thread = ({ conversaId }: { conversaId: string | null }) => {
               .map((nome) => nome[0])
               .join("")}
           </span>
-          <div>
-            <p className="text-sm font-bold">{contato?.nome}</p>
-            <div className="mt-1 flex items-center gap-2 text-[10px] text-muted-foreground">
+          <div className="min-w-0">
+            <p className="truncate text-sm font-bold">{contato?.nome}</p>
+            <div className="mt-1 flex items-center gap-2 overflow-hidden text-[10px] text-muted-foreground">
               <BadgeCanal canal={conversa.canal} />
               {rotuloModo && (
                 <Badge
@@ -98,7 +100,7 @@ export const Thread = ({ conversaId }: { conversaId: string | null }) => {
                   {rotuloModo}
                 </Badge>
               )}
-              <span>{contato?.telefone}</span>
+              <span className="hidden sm:inline">{contato?.telefone}</span>
               {conversa.departamento && (
                 <>
                   <span>•</span>
@@ -115,7 +117,7 @@ export const Thread = ({ conversaId }: { conversaId: string | null }) => {
               <p className="text-xs font-semibold">{responsavel.nome}</p>
             </div>
           )}
-          <Button variant="outline" size="icon-sm" aria-label="Ligar para o cliente">
+          <Button variant="outline" size="icon-sm" aria-label="Ligar para o cliente" className="hidden sm:inline-flex">
             <Phone className="size-3.5" />
           </Button>
           {conversa.status === "fila" && (
@@ -125,7 +127,7 @@ export const Thread = ({ conversaId }: { conversaId: string | null }) => {
           )}
           <Sheet>
             <SheetTrigger render={<Button variant="outline" size="sm" />}>
-              Ver cliente
+              <span className="hidden sm:inline">Ver cliente</span>
               <ChevronRight className="size-3.5" />
             </SheetTrigger>
             <SheetContent className="w-[26rem] sm:max-w-[26rem]">

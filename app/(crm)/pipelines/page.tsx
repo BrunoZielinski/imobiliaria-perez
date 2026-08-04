@@ -14,7 +14,7 @@ const PipelinesPage = () => {
 
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-2xl border bg-background shadow-sm">
-      <div className="flex shrink-0 items-end justify-between border-b px-5 py-4">
+      <div className="flex shrink-0 flex-col gap-3 border-b px-4 py-4 sm:px-5 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-primary">
             Gestão comercial
@@ -24,8 +24,8 @@ const PipelinesPage = () => {
             Acompanhe cada lead desde o primeiro contato até o fechamento.
           </p>
         </div>
-        <Tabs value={ativo} onValueChange={(v) => setAtivo(v as PipelineId)}>
-          <TabsList className="bg-muted/70">
+        <Tabs value={ativo} onValueChange={(v) => setAtivo(v as PipelineId)} className="max-w-full overflow-x-auto">
+          <TabsList className="min-w-max bg-muted/70">
             {PIPELINES.map((p) => (
               <TabsTrigger key={p.id} value={p.id}>
                 {p.nome}
@@ -34,7 +34,7 @@ const PipelinesPage = () => {
           </TabsList>
         </Tabs>
       </div>
-      <div className="flex min-h-0 flex-1 gap-3 overflow-x-auto bg-[#fafafa] p-4">
+      <div className="scrollbar-hide flex min-h-0 flex-1 gap-3 overflow-x-auto bg-[#fafafa] p-3 sm:p-4">
         {pipeline.etapas.map((etapa) => (
           <Coluna
             key={etapa.id}

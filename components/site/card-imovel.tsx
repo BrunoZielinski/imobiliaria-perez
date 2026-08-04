@@ -12,11 +12,11 @@ const finalidade = {
   lancamento: "Lançamento",
 } as const;
 
-export const CardImovel = ({ imovel, compacto = false }: { imovel: ImovelPerez; compacto?: boolean }) => (
+export const CardImovel = ({ imovel, compacto = false, imagemPrioritaria = false }: { imovel: ImovelPerez; compacto?: boolean; imagemPrioritaria?: boolean }) => (
   <article className="group overflow-hidden rounded-[1.35rem] border border-zinc-200 bg-white shadow-[0_14px_45px_rgba(24,24,27,0.07)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_22px_60px_rgba(24,24,27,0.12)]">
     <div className={cn("relative overflow-hidden", compacto ? "aspect-[4/3]" : "aspect-[1.28/1]")}>
       <Link href={`/imoveis/${imovel.codigo.toLowerCase()}`} aria-label={`Abrir ${imovel.titulo}`} className="absolute inset-0 outline-none focus-visible:ring-2 focus-visible:ring-[#b52235] focus-visible:ring-inset">
-        <Image src={imovel.imagens[0]} alt={`${imovel.titulo}, ${imovel.bairro}`} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className="object-cover transition duration-500 motion-safe:group-hover:scale-[1.035]" />
+        <Image src={imovel.imagens[0]} alt={`${imovel.titulo}, ${imovel.bairro}`} fill loading={imagemPrioritaria ? "eager" : "lazy"} sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className="object-cover transition duration-500 motion-safe:group-hover:scale-[1.035]" />
       </Link>
       <div className="pointer-events-none absolute inset-x-0 top-0 flex items-start justify-between p-4">
           <span className="rounded-full bg-white/95 px-3 py-1.5 text-[0.68rem] font-extrabold uppercase tracking-[0.1em] text-[#9d1d2e] shadow-sm backdrop-blur">

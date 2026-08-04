@@ -34,7 +34,7 @@ export const useCrm = create<SessaoPersistida & AcoesCrm>()(
     }),
     {
       name: "crm-perez",
-      version: 2,
+      version: 3,
       migrate: (persistido, versao) =>
         migrarSessaoPersistida(persistido, versao),
     }

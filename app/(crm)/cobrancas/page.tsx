@@ -67,8 +67,8 @@ const CobrancasPage = () => {
 
   return (
     <div className="h-full overflow-y-auto">
-      <div className="mx-auto flex max-w-[1600px] flex-col gap-4 p-5">
-        <header className="flex items-end justify-between gap-6">
+      <div className="mx-auto flex max-w-[1600px] flex-col gap-4 p-3 sm:p-5">
+        <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between sm:gap-6">
           <div>
             <Badge
               variant="outline"
@@ -95,7 +95,7 @@ const CobrancasPage = () => {
           descricao="A agenda não envia mensagens, não consulta pagamentos e não gera cobranças reais."
         />
 
-        <div className="flex items-center justify-between gap-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-amber-900">
+        <div className="flex flex-col gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-amber-900 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
           <div className="flex items-center gap-3">
             <span className="flex size-8 items-center justify-center rounded-lg bg-amber-100">
               <Puzzle className="size-4" />
@@ -117,7 +117,7 @@ const CobrancasPage = () => {
 
         <ResumoCobrancas resumo={resumo} />
 
-        <div className="grid min-h-[28rem] grid-cols-[minmax(0,1fr)_22rem] gap-4">
+        <div className="grid min-h-[28rem] gap-4 xl:grid-cols-[minmax(0,1fr)_22rem]">
           <AgendaLembretes
             lembretes={lembretes}
             selecionadoId={selecionadoId}

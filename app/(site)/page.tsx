@@ -5,6 +5,7 @@ import { BuscaHero } from "@/components/site/busca-hero";
 import { BairrosDestaque } from "@/components/site/bairros-destaque";
 import { SecaoImoveis } from "@/components/site/secao-imoveis";
 import { IMOVEIS_PEREZ } from "@/lib/perez360/dados";
+import { TourDemonstracao } from "@/components/crm/tour-demonstracao";
 
 export const metadata: Metadata = {
   title: "Imóveis em Londrina",
@@ -29,6 +30,8 @@ const HomePage = () => {
   return (
     <main>
       <BuscaHero imagem={IMOVEIS_PEREZ[0].imagens[0]} />
+
+      <section className="border-b bg-zinc-950 text-white"><div className="mx-auto flex max-w-[90rem] flex-col gap-4 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-10"><div><p className="text-xs font-bold">Apresentação Perez 360</p><p className="mt-1 text-[11px] text-white/50">Conheça o site, atendimento, CRM, operação e portais em oito passos.</p></div><TourDemonstracao publico /></div></section>
 
       <section className="border-b bg-white">
         <div className="mx-auto grid max-w-[90rem] divide-y px-5 sm:grid-cols-3 sm:divide-x sm:divide-y-0 sm:px-6 lg:px-10">

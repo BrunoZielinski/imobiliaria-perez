@@ -336,7 +336,7 @@ const SimulacaoPage = () => {
 
   return (
     <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border bg-[#f5f6f7] shadow-sm">
-      <header className="flex shrink-0 items-center justify-between gap-5 border-b bg-background px-5 py-3.5">
+      <header className="flex shrink-0 flex-col gap-4 border-b bg-background px-3 py-3.5 sm:px-5 xl:flex-row xl:items-center xl:justify-between xl:gap-5">
         <div className="min-w-0">
           <div className="flex items-center gap-2">
             <span className="rounded-full bg-primary/10 px-2 py-1 text-[9px] font-bold uppercase tracking-[0.14em] text-primary">
@@ -357,11 +357,11 @@ const SimulacaoPage = () => {
           </p>
         </div>
 
-        <div className="flex shrink-0 items-center gap-3">
+        <div className="flex w-full shrink-0 flex-col gap-3 sm:flex-row sm:items-center xl:w-auto">
           <div
             role="group"
             aria-label="Modo da simulação"
-            className="flex rounded-xl border bg-muted/45 p-1"
+            className="flex min-w-0 overflow-x-auto rounded-xl border bg-muted/45 p-1"
           >
             <button
               type="button"
@@ -404,7 +404,7 @@ const SimulacaoPage = () => {
         </div>
       </header>
 
-      <div className="flex shrink-0 items-center gap-2 border-b bg-background/70 px-5 py-2">
+      <div className="scrollbar-hide flex shrink-0 items-center gap-2 overflow-x-auto border-b bg-background/70 px-3 py-2 sm:px-5">
         <span className="text-[9px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
           Escopo demonstrado
         </span>
@@ -423,8 +423,8 @@ const SimulacaoPage = () => {
         </span>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-x-auto p-4">
-        <div className="grid h-full min-w-[1050px] grid-cols-[minmax(320px,0.9fr)_minmax(250px,0.65fr)_minmax(380px,1.15fr)] gap-4">
+      <div className="min-h-0 flex-1 overflow-y-auto p-2 sm:p-4 lg:overflow-x-auto lg:overflow-y-hidden">
+        <div className="grid gap-4 [&>section]:min-h-[34rem] lg:h-full lg:min-w-[1050px] lg:grid-cols-[minmax(320px,0.9fr)_minmax(250px,0.65fr)_minmax(380px,1.15fr)] lg:[&>section]:min-h-0">
           <CelularCliente
             mensagens={mensagens}
             rascunho={rascunho}

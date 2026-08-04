@@ -36,4 +36,17 @@ describe("migração do estado persistido do CRM", () => {
       migrado.dados.conversas.find((conversa) => conversa.id === "cv-9"),
     ).toMatchObject({ modoTriagem: "manual" });
   });
+
+  it("atualiza sessões da versão 2 para a jornada PZ-1001", () => {
+    const dadosVersao2 = criarSeed(new Date("2026-08-03T13:00:00.000Z"));
+    dadosVersao2.imoveis[0] = { ...dadosVersao2.imoveis[0], codigo: "PZ-1042" };
+
+    const migrado = migrarSessaoPersistida(
+      { dados: dadosVersao2, papel: "administrador", usuarioId: "at-1" },
+      2,
+      new Date("2026-08-04T13:00:00.000Z"),
+    );
+
+    expect(migrado.dados.imoveis[0].codigo).toBe("PZ-1001");
+  });
 });

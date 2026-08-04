@@ -58,7 +58,7 @@ export const CatalogoImoveis = ({ finalidadeInicial, buscaInicial }: { finalidad
           ) : visualizacao === "mapa" ? (
             <MapaDemonstrativo imoveis={resultados} />
           ) : (
-            <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">{resultados.map((imovel) => <CardImovel key={imovel.id} imovel={imovel} compacto />)}</div>
+            <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">{resultados.map((imovel, indice) => <CardImovel key={imovel.id} imovel={imovel} compacto imagemPrioritaria={indice < 3} />)}</div>
           )}
         </div>
       </div>

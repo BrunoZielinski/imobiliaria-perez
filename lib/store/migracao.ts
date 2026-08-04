@@ -14,7 +14,7 @@ export const migrarSessaoPersistida = (
   versao: number,
   agora = new Date(),
 ): SessaoPersistida => {
-  if (versao >= 2) return persistido as SessaoPersistida;
+  if (versao >= 3) return persistido as SessaoPersistida;
 
   const anterior = persistido as Partial<SessaoPersistida> | undefined;
   const papel = papeis.includes(anterior?.papel as Papel)

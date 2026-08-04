@@ -27,7 +27,7 @@ export const Coluna = ({ etapa, leads }: { etapa: Etapa; leads: Lead[] }) => {
         if (leadId) moverLead(leadId, etapa.id, new Date());
       }}
       className={cn(
-        "flex w-72 shrink-0 flex-col rounded-xl border bg-background shadow-xs transition-colors",
+        "flex w-[18rem] shrink-0 flex-col rounded-xl border bg-background shadow-xs transition-colors",
         sobre && "border-primary bg-primary/5"
       )}
     >

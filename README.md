@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Perez 360 — apresentação visual
 
-## Getting Started
+Protótipo navegável da futura plataforma digital da Imobiliária Perez. A demonstração conecta novo site público, catálogo de imóveis, atendimento, CRM, operação de locação, portais e gestão executiva.
 
-First, run the development server:
+## Natureza da entrega
+
+Esta aplicação é exclusivamente front-end. Imóveis, pessoas, contratos, mensagens, valores e documentos são fictícios. Não existe integração real com WhatsApp/Meta, bancos, ERP, portais imobiliários, mapas, assinatura eletrônica ou autenticação.
+
+## Executar localmente
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abra [http://localhost:3000](http://localhost:3000). O botão **Iniciar apresentação** mostra a sequência recomendada de oito módulos.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Rotas públicas
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `/` — nova home Busca Direta;
+- `/imoveis` — catálogo, filtros, favoritos e mapa demonstrativo;
+- `/imoveis/pz-1001` — imóvel principal da jornada;
+- `/vender-alugar` — captação e administração;
+- `/sobre` — história e posicionamento;
+- `/contato` — canais e formulário demonstrativo.
 
-## Learn More
+## Plataforma interna
 
-To learn more about Next.js, take a look at the following resources:
+- `/dashboard`, `/inbox`, `/simulacao`, `/pipelines`;
+- `/contatos`, `/carteira`, `/captacoes`;
+- `/locacoes`, `/manutencoes`, `/cobrancas`, `/financeiro`;
+- `/atendentes`, `/configuracoes`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Portais
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `/portal` — escolha do perfil;
+- `/portal/proprietario` — carteira, repasses, documentos e chamados;
+- `/portal/locatario` — contrato, vencimentos, documentos e manutenção.
 
-## Deploy on Vercel
+## Verificação
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+pnpm test
+pnpm lint
+pnpm exec tsc --noEmit
+pnpm build
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Favoritos e mudanças simuladas permanecem apenas no navegador. Use a ação **Restaurar demonstração** no cabeçalho interno para voltar ao estado inicial.

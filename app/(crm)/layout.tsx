@@ -4,6 +4,8 @@ import { Simulador } from "@/components/crm/simulador";
 import { SomenteCliente } from "@/components/crm/somente-cliente";
 import { NavegacaoMobile } from "@/components/crm/navegacao-mobile";
 import { SeletorModulo } from "@/components/crm/seletor-modulo";
+import { TourDemonstracao } from "@/components/crm/tour-demonstracao";
+import { RestaurarDemonstracao } from "@/components/crm/restaurar-demonstracao";
 import { LogoPerez } from "@/components/site/logo-perez";
 import Link from "next/link";
 import { ArrowUpRight, Wifi } from "lucide-react";
@@ -40,7 +42,9 @@ const CrmLayout = ({ children }: { children: React.ReactNode }) => (
           <span className="hidden sm:inline">Operação online</span>
         </div>
         <SomenteCliente fallback={null}>
-          <div className="flex items-center gap-2">
+          <div className="hidden items-center gap-2 xl:flex">
+            <TourDemonstracao />
+            <RestaurarDemonstracao />
             <Simulador />
             <SeletorPapel />
           </div>

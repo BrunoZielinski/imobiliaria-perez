@@ -16,7 +16,7 @@ export const BuscaHero = ({ imagem }: { imagem: string }) => {
 
   return (
     <section className="relative min-h-[44rem] overflow-hidden bg-zinc-950 text-white lg:min-h-[48rem]">
-      <Image src={imagem} alt="Apartamento contemporâneo com vista para Londrina" fill priority sizes="100vw" className="object-cover opacity-70" />
+      <Image src={imagem} alt="Apartamento contemporâneo com vista para Londrina" fill loading="eager" sizes="100vw" className="object-cover opacity-70" />
       <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(15,15,17,.9)_0%,rgba(15,15,17,.58)_48%,rgba(15,15,17,.16)_100%)]" />
       <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(15,15,17,.55)_0%,transparent_45%)]" />
 
