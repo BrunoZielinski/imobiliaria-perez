@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { IMOVEIS_PEREZ } from "./dados";
 import {
+  ABAS_MARKETING,
   CAMPANHAS_MARKETING,
   CONTEUDOS_MARKETING,
   calcularResumoMarketing,
@@ -11,6 +12,17 @@ import {
 } from "./marketing";
 
 describe("marketing Perez 360", () => {
+  it("expõe as seis áreas da central interna", () => {
+    expect(ABAS_MARKETING.map((item) => item.id)).toEqual([
+      "resumo",
+      "estudio",
+      "calendario",
+      "trafego",
+      "conteudos",
+      "aprovacoes",
+    ]);
+  });
+
   it("mantém campanhas vinculadas a imóveis existentes", () => {
     const ids = new Set(IMOVEIS_PEREZ.map((item) => item.id));
 

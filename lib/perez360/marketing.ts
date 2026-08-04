@@ -6,6 +6,16 @@ export type StatusCampanha = "rascunho" | "ativa" | "pausada" | "concluida";
 export type ObjetivoMarketing = "vender" | "alugar" | "captar" | "marca" | "visitas";
 export type FormatoMarketing = "post" | "carrossel" | "stories" | "video_curto" | "busca" | "video";
 export type TomMarketing = "sofisticado" | "proximo" | "direto" | "institucional";
+export type AbaMarketing = "resumo" | "estudio" | "calendario" | "trafego" | "conteudos" | "aprovacoes";
+
+export const ABAS_MARKETING: { id: AbaMarketing; rotulo: string }[] = [
+  { id: "resumo", rotulo: "Visão geral" },
+  { id: "estudio", rotulo: "Estúdio IA" },
+  { id: "calendario", rotulo: "Calendário" },
+  { id: "trafego", rotulo: "Tráfego pago" },
+  { id: "conteudos", rotulo: "Conteúdos" },
+  { id: "aprovacoes", rotulo: "Aprovações" },
+];
 
 export type CampanhaMarketing = {
   id: string;
