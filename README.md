@@ -26,10 +26,12 @@ Abra [http://localhost:3000](http://localhost:3000). O botão **Iniciar apresent
 
 ## Plataforma interna
 
-- `/dashboard`, `/inbox`, `/simulacao`, `/pipelines`;
+- `/dashboard`, `/inbox`, `/simulacao`, `/pipelines`, `/marketing`;
 - `/contatos`, `/carteira`, `/captacoes`;
 - `/locacoes`, `/manutencoes`, `/cobrancas`, `/financeiro`;
 - `/atendentes`, `/configuracoes`.
+
+`/marketing` apresenta uma central demonstrativa para social media, IA de conteúdo, calendário editorial, tráfego pago e aprovações.
 
 ## Portais
 

@@ -10,6 +10,7 @@ import {
   filtrarConteudos,
   formatarPercentual,
   gerarKitConteudo,
+  agruparConteudosPorStatus,
   proximoStatusConteudo,
 } from "./marketing";
 
@@ -109,5 +110,13 @@ describe("marketing Perez 360", () => {
     expect(proximoStatusConteudo("rascunho")).toBe("revisao");
     expect(proximoStatusConteudo("revisao")).toBe("aprovado");
     expect(proximoStatusConteudo("publicado")).toBe("publicado");
+  });
+
+  it("organiza conteúdos nas cinco etapas sem perder itens", () => {
+    const grupos = agruparConteudosPorStatus(CONTEUDOS_MARKETING);
+
+    expect(Object.keys(grupos)).toEqual(["rascunho", "revisao", "aprovado", "agendado", "publicado"]);
+    expect(Object.values(grupos).flat()).toHaveLength(CONTEUDOS_MARKETING.length);
+    expect(grupos.revisao.map((item) => item.id)).toEqual(["conteudo-02", "conteudo-06"]);
   });
 });

@@ -372,6 +372,14 @@ export const proximoStatusConteudo = (status: StatusConteudo): StatusConteudo =>
   return SEQUENCIA_STATUS[Math.min(indice + 1, SEQUENCIA_STATUS.length - 1)];
 };
 
+export const agruparConteudosPorStatus = (conteudos: ConteudoMarketing[]) => ({
+  rascunho: conteudos.filter((item) => item.status === "rascunho"),
+  revisao: conteudos.filter((item) => item.status === "revisao"),
+  aprovado: conteudos.filter((item) => item.status === "aprovado"),
+  agendado: conteudos.filter((item) => item.status === "agendado"),
+  publicado: conteudos.filter((item) => item.status === "publicado"),
+});
+
 export const formatarPercentual = (valor: number) => new Intl.NumberFormat("pt-BR", {
   style: "percent",
   minimumFractionDigits: 1,
