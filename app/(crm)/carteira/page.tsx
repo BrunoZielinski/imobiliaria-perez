@@ -1,170 +1,17 @@
 "use client";
 
+import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
-import { Building2, Home, KeyRound, MapPin, Search, Tag } from "lucide-react";
-import { useCrm } from "@/lib/store/crm-store";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-
-const moeda = (valor: number) =>
-  valor.toLocaleString("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-    maximumFractionDigits: 0,
-  });
+import { Building2, ExternalLink, Home, MapPin, Search, Tag } from "lucide-react";
+import { CabecalhoModulo } from "@/components/operacao/cabecalho-modulo";
+import { IMOVEIS_PEREZ, PESSOAS_PEREZ } from "@/lib/perez360/dados";
+import { formatarMoeda } from "@/lib/perez360/seletores";
 
 const CarteiraPage = () => {
   const [busca, setBusca] = useState("");
-  const dados = useCrm((s) => s.dados);
   const termo = busca.trim().toLocaleLowerCase("pt-BR");
-  const imoveis = dados.imoveis.filter(
-    (imovel) =>
-      !termo ||
-      imovel.codigo.toLocaleLowerCase("pt-BR").includes(termo) ||
-      imovel.bairro.toLocaleLowerCase("pt-BR").includes(termo),
-  );
-  const venda = dados.imoveis.filter((imovel) => imovel.finalidade === "venda").length;
-  const locacao = dados.imoveis.length - venda;
-  const oportunidades = dados.leads.filter((lead) => lead.imovelId).length;
-
-  return (
-    <div className="h-full overflow-y-auto">
-      <div className="mx-auto flex max-w-7xl flex-col gap-5 p-5">
-        <div className="flex items-end justify-between gap-4">
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-primary">
-              Portfólio integrado
-            </p>
-            <h1 className="mt-1 text-2xl font-bold tracking-tight">Carteira de imóveis</h1>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Imóveis conectados às conversas e oportunidades comerciais.
-            </p>
-          </div>
-          <div className="relative w-72">
-            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              value={busca}
-              onChange={(evento) => setBusca(evento.target.value)}
-              placeholder="Buscar código ou bairro"
-              className="bg-background pl-9"
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-3 gap-3">
-          <div className="rounded-2xl border bg-background p-4 shadow-xs">
-            <span className="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
-              <Building2 className="size-4" />
-            </span>
-            <p className="mt-3 text-2xl font-bold">{dados.imoveis.length}</p>
-            <p className="text-xs text-muted-foreground">imóveis na carteira</p>
-          </div>
-          <div className="rounded-2xl border bg-background p-4 shadow-xs">
-            <span className="flex size-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
-              <Home className="size-4" />
-            </span>
-            <p className="mt-3 text-2xl font-bold">
-              {venda} <span className="text-sm font-medium text-muted-foreground">/ {locacao}</span>
-            </p>
-            <p className="text-xs text-muted-foreground">venda / locação</p>
-          </div>
-          <div className="rounded-2xl border bg-background p-4 shadow-xs">
-            <span className="flex size-9 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
-              <Tag className="size-4" />
-            </span>
-            <p className="mt-3 text-2xl font-bold">{oportunidades}</p>
-            <p className="text-xs text-muted-foreground">oportunidades vinculadas</p>
-          </div>
-        </div>
-
-        <div className="overflow-hidden rounded-2xl border bg-background shadow-xs">
-          <div className="flex items-center justify-between border-b px-5 py-4">
-            <div>
-              <p className="text-sm font-bold">Imóveis disponíveis</p>
-              <p className="text-[11px] text-muted-foreground">
-                Dados centrais para o atendimento comercial
-              </p>
-            </div>
-            <Badge variant="outline">{imoveis.length} resultados</Badge>
-          </div>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Imóvel</TableHead>
-                <TableHead>Localização</TableHead>
-                <TableHead>Finalidade</TableHead>
-                <TableHead>Valor</TableHead>
-                <TableHead className="text-right">Oportunidades</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {imoveis.map((imovel) => {
-                const vinculadas = dados.leads.filter((lead) => lead.imovelId === imovel.id).length;
-                return (
-                  <TableRow key={imovel.id}>
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                        <span className="flex size-9 items-center justify-center rounded-lg bg-muted text-muted-foreground">
-                          {imovel.tipo === "casa" ? (
-                            <Home className="size-4" />
-                          ) : (
-                            <Building2 className="size-4" />
-                          )}
-                        </span>
-                        <div>
-                          <p className="font-semibold">{imovel.codigo}</p>
-                          <p className="text-[11px] capitalize text-muted-foreground">
-                            {imovel.tipo}
-                          </p>
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <span className="flex items-center gap-1.5">
-                        <MapPin className="size-3.5 text-muted-foreground" />
-                        {imovel.bairro}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant="outline"
-                        className={
-                          imovel.finalidade === "locacao"
-                            ? "border-emerald-200 bg-emerald-50 text-emerald-700"
-                            : "border-primary/20 bg-primary/5 text-primary"
-                        }
-                      >
-                        {imovel.finalidade === "locacao" ? (
-                          <KeyRound className="size-3" />
-                        ) : (
-                          <Tag className="size-3" />
-                        )}
-                        {imovel.finalidade === "locacao" ? "Locação" : "Venda"}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="font-semibold">{moeda(imovel.valor)}</TableCell>
-                    <TableCell className="text-right">
-                      <span className="inline-flex min-w-7 justify-center rounded-full bg-muted px-2 py-1 text-xs font-semibold">
-                        {vinculadas}
-                      </span>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </div>
-      </div>
-    </div>
-  );
+  const imoveis = IMOVEIS_PEREZ.filter((item) => !termo || `${item.codigo} ${item.bairro} ${item.titulo}`.toLocaleLowerCase("pt-BR").includes(termo));
+  return <div className="h-full overflow-y-auto"><div className="mx-auto flex max-w-7xl flex-col gap-5 p-3 sm:p-5"><CabecalhoModulo sobrelinha="Portfólio integrado" titulo="Carteira de imóveis" descricao="A mesma base que alimenta o site, agora com publicação, proprietário e desempenho demonstrativo." icone={Building2} acao={<label className="flex w-full items-center gap-2 rounded-xl border bg-background px-3 py-2.5 sm:w-72"><Search className="size-4 text-muted-foreground" /><span className="sr-only">Buscar imóvel</span><input value={busca} onChange={(evento) => setBusca(evento.target.value)} placeholder="Código, bairro ou título" className="min-w-0 flex-1 bg-transparent text-sm outline-none" /></label>} /><div className="grid grid-cols-3 gap-3">{[[Building2, IMOVEIS_PEREZ.length, "imóveis na carteira"], [Home, IMOVEIS_PEREZ.filter((item) => item.finalidade === "locacao").length, "em locação"], [Tag, IMOVEIS_PEREZ.filter((item) => item.destaque).length, "em destaque no site"]].map(([Icone, valor, rotulo]) => { const Icon = Icone as typeof Building2; return <div key={String(rotulo)} className="rounded-2xl border bg-background p-4 shadow-xs"><Icon className="size-4 text-primary" /><p className="mt-3 text-2xl font-bold">{String(valor)}</p><p className="text-[10px] text-muted-foreground sm:text-xs">{String(rotulo)}</p></div>; })}</div><div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">{imoveis.map((imovel, indice) => { const proprietario = PESSOAS_PEREZ.find((item) => item.id === imovel.proprietarioId); return <article key={imovel.id} className="overflow-hidden rounded-2xl border bg-background shadow-xs"><div className="relative aspect-[2.1/1]"><Image src={imovel.imagens[0]} alt={imovel.titulo} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" /><span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[9px] font-bold uppercase text-primary">Publicado</span></div><div className="p-4"><div className="flex items-start justify-between gap-3"><div><p className="text-[9px] font-bold uppercase tracking-[.12em] text-primary">{imovel.codigo}</p><h2 className="mt-1 line-clamp-1 text-sm font-bold">{imovel.titulo}</h2></div><Link href={`/imoveis/${imovel.codigo.toLowerCase()}`} aria-label={`Ver ${imovel.codigo} no site`} className="grid size-8 shrink-0 place-items-center rounded-lg border text-muted-foreground hover:text-primary"><ExternalLink className="size-3.5" /></Link></div><div className="mt-4 grid gap-2 text-[11px] text-muted-foreground"><span className="flex items-center gap-1.5"><MapPin className="size-3" /> {imovel.bairro} · {formatarMoeda(imovel.preco)}</span><span>Proprietário: <b className="text-foreground">{proprietario?.nome}</b></span><span>Responsável: <b className="text-foreground">{imovel.corretor}</b></span></div><div className="mt-4 grid grid-cols-2 gap-2 rounded-xl bg-muted/60 p-3 text-center"><div><b className="block text-sm">{124 + indice * 17}</b><span className="text-[9px] text-muted-foreground">visualizações</span></div><div><b className="block text-sm">{3 + (indice % 5)}</b><span className="text-[9px] text-muted-foreground">interesses</span></div></div></div></article>; })}</div></div></div>;
 };
-
 export default CarteiraPage;
