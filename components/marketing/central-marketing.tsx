@@ -14,6 +14,8 @@ import {
 import { NavegacaoMarketing } from "./navegacao-marketing";
 import { ResumoMarketing } from "./resumo-marketing";
 import { EstudioIA } from "./estudio-ia";
+import { CalendarioEditorial } from "./calendario-editorial";
+import { GestaoTrafego } from "./gestao-trafego";
 
 const EM_BREVE: Record<Exclude<AbaMarketing, "resumo">, { titulo: string; descricao: string }> = {
   estudio: { titulo: "Estúdio IA", descricao: "Criação guiada de campanhas multicanal a partir dos imóveis Perez." },
@@ -48,6 +50,10 @@ export const CentralMarketing = () => {
           <ResumoMarketing irPara={setAba} />
         ) : aba === "estudio" ? (
           <EstudioIA aoEnviarAprovacao={enviarAprovacao} />
+        ) : aba === "calendario" ? (
+          <CalendarioEditorial />
+        ) : aba === "trafego" ? (
+          <GestaoTrafego />
         ) : (
           <section className="grid min-h-[28rem] place-items-center rounded-2xl border border-dashed bg-white p-8 text-center">
             <div className="max-w-md"><span className="mx-auto grid size-14 place-items-center rounded-2xl bg-primary/10 text-primary"><Sparkles className="size-6" /></span><h2 className="mt-5 text-xl font-black">{EM_BREVE[aba].titulo}</h2><p className="mt-2 text-sm leading-6 text-zinc-500">{EM_BREVE[aba].descricao}</p><span className="mt-5 inline-block rounded-full bg-zinc-100 px-3 py-1.5 text-[10px] font-bold text-zinc-500">{conteudos.length} conteúdos na demonstração</span></div>

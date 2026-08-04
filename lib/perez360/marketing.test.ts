@@ -5,6 +5,7 @@ import {
   CAMPANHAS_MARKETING,
   CONTEUDOS_MARKETING,
   calcularResumoMarketing,
+  calcularMetricasCampanha,
   criarConteudoDoKit,
   filtrarConteudos,
   formatarPercentual,
@@ -38,6 +39,15 @@ describe("marketing Perez 360", () => {
     expect(resumo.investimento).toBe(18_750);
     expect(resumo.leads).toBe(213);
     expect(resumo.cpl).toBeCloseTo(88.03, 2);
+  });
+
+  it("calcula CTR, CPC e CPL sem duplicar métricas na interface", () => {
+    expect(calcularMetricasCampanha(CAMPANHAS_MARKETING[0])).toEqual({
+      ctr: 3_112 / 168_300,
+      cpc: 5_200 / 3_112,
+      cpl: 5_200 / 54,
+      progressoOrcamento: 5_200 / 7_500,
+    });
   });
 
   it("evita métricas inválidas quando não há investimento ou leads", () => {

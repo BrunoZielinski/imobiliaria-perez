@@ -331,6 +331,13 @@ export const EVENTOS_MARKETING: EventoMarketing[] = [
 
 const dividir = (numerador: number, denominador: number) => denominador > 0 ? numerador / denominador : 0;
 
+export const calcularMetricasCampanha = (campanha: CampanhaMarketing) => ({
+  ctr: dividir(campanha.cliques, campanha.impressoes),
+  cpc: dividir(campanha.investimento, campanha.cliques),
+  cpl: dividir(campanha.investimento, campanha.leads),
+  progressoOrcamento: dividir(campanha.investimento, campanha.orcamento),
+});
+
 export const calcularResumoMarketing = (
   campanhas: CampanhaMarketing[],
   conteudos: ConteudoMarketing[],
